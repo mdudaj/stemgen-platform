@@ -1,0 +1,30 @@
+# Curriculum Source Registry
+
+## Purpose
+
+The source registry records official curriculum sources and supporting sources used by the platform. Official Tanzania Institute of Education documents are Tier 1 and remain the source of curriculum facts.
+
+## Source Tiers
+
+- Tier 1: Official curriculum facts. TIE curriculum and syllabus documents.
+- Tier 2: Official supporting educational material. TIE public school resources and related official documents.
+- Tier 3: Context and constraints. UNICEF, UN, government, and academic sources about STEM education and digital inequality.
+- Tier 4: Research comparators. AI-in-education, animation, curriculum generation, and narrated STEM animation research.
+
+Tier 2-4 sources may contextualize or enrich. They must not override Tier 1 curriculum facts.
+
+## Tier 1 Sources
+
+| source_id | title | official_url | publisher | year | subject/coverage | standards covered | source tier | expected local snapshot path | checksum requirement | licensing/copyright caution |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `tie_primary_curriculum_2024` | Primary Education Curriculum | `https://www.tie.go.tz/uploads/documents/en-1724244732-Curriculum%20for%20Primary%20Education.pdf` | Tanzania Institute of Education | 2024 inferred from URL timestamp unless confirmed from document metadata | Primary education curriculum framework | Primary education; use to confirm official standard/subject framing | Tier 1 | `artifacts/curriculum-snapshots/<snapshot_id>/downloaded_sources/tie_primary_curriculum_2024.pdf` | SHA-256 recorded in `checksums.sha256` and `fetch_manifest.json` | Preserve source attribution; do not redistribute beyond research/fair-use needs without review. |
+| `tie_science_std_iii_vi_2024` | Science Syllabus For Primary Education Standard III - VI | `https://www.tie.go.tz/uploads/documents/en-1727175605-Science%20Syllabus%20For%20Primary%20Education%20Standard%20III%20-%20VI.pdf` | Tanzania Institute of Education | 2024 inferred from URL timestamp unless confirmed from document metadata | Science syllabus | Standards III-VI | Tier 1 | `artifacts/curriculum-snapshots/<snapshot_id>/downloaded_sources/tie_science_std_iii_vi_2024.pdf` | SHA-256 recorded in `checksums.sha256` and `fetch_manifest.json` | Use for curriculum facts; store derived facts with page/section references. |
+| `tie_mathematics_primary_2024` | Syllabus For Mathematics Primary Education | `https://www.tie.go.tz/uploads/documents/en-1727169918-SYLLABUS%20FOR%20MATHEMATICS%20PRIMARY%20EDUCATION.pdf` | Tanzania Institute of Education | 2024 inferred from URL timestamp unless confirmed from document metadata | Mathematics syllabus | Primary education | Tier 1 | `artifacts/curriculum-snapshots/<snapshot_id>/downloaded_sources/tie_mathematics_primary_2024.pdf` | SHA-256 recorded in `checksums.sha256` and `fetch_manifest.json` | Use exact source references for extracted topics. |
+| `tie_geography_std_iii_vi_2024` | Geography Standard III-VI | `https://www.tie.go.tz/uploads/documents/en-1727166774-GEOGRAPHY%20STANDARD%20III-VI%20.pdf` | Tanzania Institute of Education | 2024 inferred from URL timestamp unless confirmed from document metadata | Geography syllabus | Standards III-VI | Tier 1 | `artifacts/curriculum-snapshots/<snapshot_id>/downloaded_sources/tie_geography_std_iii_vi_2024.pdf` | SHA-256 recorded in `checksums.sha256` and `fetch_manifest.json` | Geography is secondary/optional for first implementation slices. |
+
+## Registry Rules
+
+- Do not overwrite source metadata silently.
+- Store retrieved timestamp, URL, HTTP metadata when fetched, content length, and checksum.
+- If official URLs change, create a new source registry version rather than mutating old snapshot evidence.
+- If metadata is inferred, label it as inferred until manually confirmed from the document.

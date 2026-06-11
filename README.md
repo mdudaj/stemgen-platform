@@ -83,3 +83,20 @@ Superusers can create invitations at:
 
 Invite acceptance creates a local account and assigns either the Research
 Operator or Evaluator role.
+
+## Milestone 22.5 Planning Artifacts
+
+Evaluation and curriculum-readiness planning lives under:
+
+- `docs/research/`
+- `docs/curriculum/`
+- `docs/evaluation/`
+- `docs/platform/`
+- `docs/repository/`
+- `docs/adr/0007-0011*.md`
+
+These artifacts define the next implementation slices for reproducible TIE curriculum data, configurable research workflows, expert review, evidence export, provenance/replay, WhatsApp evaluator coordination, and gated project repository writes.
+
+
+The planning artifacts are aligned with the proposal PDF under `/home/jmduda/Desktop/UDSM/Dissertation/` and the initial platform ADRs from `/home/jmduda/Desktop/FikraBytez/dissertation/docs/adr/`, now copied into `docs/adr/0001-0006*.md`.
+

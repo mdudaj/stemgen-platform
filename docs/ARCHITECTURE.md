@@ -53,3 +53,10 @@ texture, academic blue/teal, and restrained warm accent.
 Local preview uses PostgreSQL and Redis through Docker Compose. The default
 settings fall back to SQLite when `DATABASE_URL` is not set so baseline checks
 remain easy to run in a fresh workspace.
+
+## Research Workflow Architecture Direction
+
+Research workflows should follow a governed definition, workflow/runtime, runtime capture, evidence projection, and audit/reconstruction layering. Viewflow remains the preferred process/task runtime. Repo-owned workflow definitions compile into execution manifests; the platform must not generate arbitrary Python Viewflow classes dynamically.
+
+Deterministic curriculum extraction is the source of truth. Optional LLM enrichment and automated review are assistive artifacts and cannot overwrite curriculum facts or promote topics without human acceptance.
+
