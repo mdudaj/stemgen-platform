@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stemgen-platform.local/schemas/curriculum/source_registry.schema.json",
+  "title": "Curriculum Source Registry",
+  "description": "Registry of authoritative and supporting curriculum sources used for reproducible curriculum-data intake.",
+  "type": "object",
+  "required": ["registry_version", "created_at", "sources"],
+  "properties": {
+    "registry_version": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["source_id", "title", "official_url", "publisher", "source_tier", "subject_coverage", "standards_covered", "expected_local_snapshot_path", "checksum_required", "licensing_caution"],
+        "properties": {
+          "source_id": { "type": "string", "pattern": "^[a-z0-9_\\-]+$" },
+          "title": { "type": "string", "minLength": 1 },
+          "official_url": { "type": "string", "format": "uri" },
+          "publisher": { "type": "string", "minLength": 1 },
+          "year": { "type": ["integer", "null"], "minimum": 1900 },
+          "subject_coverage": { "type": "string", "minLength": 1 },
+          "standards_covered": { "type": "array", "items": { "type": "string" } },
+          "source_tier": { "type": "string", "enum": ["tier_1_official_curriculum", "tier_2_official_supporting", "tier_3_context", "tier_4_research_comparator"] },
+          "expected_local_snapshot_path": { "type": "string", "minLength": 1 },
+          "checksum_required": { "type": "boolean", "const": true },
+          "licensing_caution": { "type": "string", "minLength": 1 },
+          "may_override_tier_1": { "type": "boolean", "const": false }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

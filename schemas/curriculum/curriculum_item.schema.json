@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stemgen-platform.local/schemas/curriculum/curriculum_item.schema.json",
+  "title": "Curriculum Item",
+  "description": "A normalized deterministic curriculum item extracted from official curriculum sources.",
+  "type": "object",
+  "required": ["source_id", "source_url", "source_title", "publisher", "subject", "standard", "topic", "content_reference", "language", "animation_suitability", "provenance"],
+  "properties": {
+    "source_id": { "type": "string", "minLength": 1 },
+    "source_url": { "type": "string", "format": "uri" },
+    "source_title": { "type": "string", "minLength": 1 },
+    "publisher": { "type": "string", "const": "Tanzania Institute of Education" },
+    "subject": { "type": "string", "minLength": 1 },
+    "standard": { "type": "string", "minLength": 1 },
+    "topic": { "type": "string", "minLength": 1 },
+    "subtopic": { "type": "string" },
+    "learning_objective": { "type": "string" },
+    "competency": { "type": "string" },
+    "content_reference": {
+      "type": "object",
+      "required": ["page", "section", "table"],
+      "properties": {
+        "page": { "type": ["integer", "null"], "minimum": 1 },
+        "section": { "type": ["string", "null"] },
+        "table": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "language": { "type": "string", "minLength": 1 },
+    "animation_suitability": {
+      "type": "object",
+      "required": ["candidate", "rationale", "screening_method", "review_status"],
+      "properties": {
+        "candidate": { "type": "boolean" },
+        "rationale": { "type": "string" },
+        "screening_method": { "type": "string" },
+        "review_status": { "type": "string", "enum": ["pending", "screened", "reviewed", "accepted", "rejected", "needs_revision"] }
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["retrieved_at", "checksum", "extractor_version", "manual_reviewed_by"],
+      "properties": {
+        "retrieved_at": { "type": "string", "format": "date-time" },
+        "checksum": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+        "extractor_version": { "type": "string", "minLength": 1 },
+        "manual_reviewed_by": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

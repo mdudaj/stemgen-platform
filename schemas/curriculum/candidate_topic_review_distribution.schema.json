@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stemgen-platform.local/schemas/curriculum/candidate_topic_review_distribution.schema.json",
+  "title": "Candidate Topic Review Distribution",
+  "description": "Optional verbalized-sampling-inspired automated review artifact for candidate topic suitability.",
+  "type": "object",
+  "required": ["topic_id", "source_item_ids", "review_method", "provider", "model", "prompt_template_id", "input_hash", "source_snapshot_id", "judgments", "uncertainty_flags", "human_review_required"],
+  "properties": {
+    "topic_id": { "type": "string", "minLength": 1 },
+    "source_item_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "review_method": { "type": "string", "const": "verbalized_sampling" },
+    "provider": { "type": "string" },
+    "model": { "type": "string" },
+    "prompt_template_id": { "type": "string", "minLength": 1 },
+    "input_hash": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+    "source_snapshot_id": { "type": "string", "minLength": 1 },
+    "judgments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["label", "probability", "rationale", "criteria"],
+        "properties": {
+          "label": { "type": "string", "enum": ["highly_suitable", "suitable", "uncertain", "weak", "unsuitable"] },
+          "probability": { "type": "number", "minimum": 0, "maximum": 1 },
+          "rationale": { "type": "string" },
+          "criteria": {
+            "type": "object",
+            "required": ["process_or_sequence", "change_over_time", "cause_effect", "visualizability", "primary_level_fit", "curriculum_alignment_risk"],
+            "properties": {
+              "process_or_sequence": { "type": "number", "minimum": 0, "maximum": 1 },
+              "change_over_time": { "type": "number", "minimum": 0, "maximum": 1 },
+              "cause_effect": { "type": "number", "minimum": 0, "maximum": 1 },
+              "visualizability": { "type": "number", "minimum": 0, "maximum": 1 },
+              "primary_level_fit": { "type": "number", "minimum": 0, "maximum": 1 },
+              "curriculum_alignment_risk": { "type": "number", "minimum": 0, "maximum": 1 }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "uncertainty_flags": { "type": "array", "items": { "type": "string" } },
+    "human_review_required": { "type": "boolean", "const": true }
+  },
+  "additionalProperties": false
+}

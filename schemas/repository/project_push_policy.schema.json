@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stemgen-platform.local/schemas/repository/project_push_policy.schema.json",
+  "title": "Project Push Policy",
+  "description": "Machine-readable safety policy for explicit, gated project repository commits and pushes.",
+  "type": "object",
+  "required": ["policy_id", "no_commit_by_default", "no_push_by_default", "blocked_branches", "force_push_allowed", "requires_explicit_push_flag", "requires_remote_verification", "requires_clean_worktree"],
+  "properties": {
+    "policy_id": { "type": "string", "minLength": 1 },
+    "no_commit_by_default": { "type": "boolean", "const": true },
+    "no_push_by_default": { "type": "boolean", "const": true },
+    "blocked_branches": { "type": "array", "items": { "type": "string", "enum": ["main", "master"] }, "minItems": 2 },
+    "force_push_allowed": { "type": "boolean", "const": false },
+    "requires_explicit_push_flag": { "type": "boolean", "const": true },
+    "requires_remote_verification": { "type": "boolean", "const": true },
+    "requires_clean_worktree": { "type": "boolean", "const": true },
+    "blocked_paths": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": false
+}

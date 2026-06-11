@@ -1,0 +1,62 @@
+{
+  "registry_version": "0.1.0",
+  "created_at": "2026-06-11T00:00:00Z",
+  "sources": [
+    {
+      "source_id": "tie_primary_curriculum_2024",
+      "title": "Curriculum for Primary Education",
+      "official_url": "https://www.tie.go.tz/uploads/documents/en-1724244732-Curriculum%20for%20Primary%20Education.pdf",
+      "publisher": "Tanzania Institute of Education",
+      "year": 2024,
+      "subject_coverage": "Primary education curriculum",
+      "standards_covered": ["I", "II", "III", "IV", "V", "VI"],
+      "source_tier": "tier_1_official_curriculum",
+      "expected_local_snapshot_path": "artifacts/curriculum-snapshots/example/downloaded_sources/tie_primary_curriculum_2024.pdf",
+      "checksum_required": true,
+      "licensing_caution": "Use for research evidence with copyright caution; do not redistribute source PDFs unless permitted.",
+      "may_override_tier_1": false
+    },
+    {
+      "source_id": "tie_science_syllabus_iii_vi_2024",
+      "title": "Science Syllabus For Primary Education Standard III - VI",
+      "official_url": "https://www.tie.go.tz/uploads/documents/en-1727175605-Science%20Syllabus%20For%20Primary%20Education%20Standard%20III%20-%20VI.pdf",
+      "publisher": "Tanzania Institute of Education",
+      "year": 2024,
+      "subject_coverage": "Science syllabus",
+      "standards_covered": ["III", "IV", "V", "VI"],
+      "source_tier": "tier_1_official_curriculum",
+      "expected_local_snapshot_path": "artifacts/curriculum-snapshots/example/downloaded_sources/tie_science_syllabus_iii_vi_2024.pdf",
+      "checksum_required": true,
+      "licensing_caution": "Use for research evidence with copyright caution; do not redistribute source PDFs unless permitted.",
+      "may_override_tier_1": false
+    },
+    {
+      "source_id": "tie_mathematics_syllabus_primary_2024",
+      "title": "Syllabus for Mathematics Primary Education",
+      "official_url": "https://www.tie.go.tz/uploads/documents/en-1727169918-SYLLABUS%20FOR%20MATHEMATICS%20PRIMARY%20EDUCATION.pdf",
+      "publisher": "Tanzania Institute of Education",
+      "year": 2024,
+      "subject_coverage": "Mathematics syllabus",
+      "standards_covered": ["I", "II", "III", "IV", "V", "VI"],
+      "source_tier": "tier_1_official_curriculum",
+      "expected_local_snapshot_path": "artifacts/curriculum-snapshots/example/downloaded_sources/tie_mathematics_syllabus_primary_2024.pdf",
+      "checksum_required": true,
+      "licensing_caution": "Use for research evidence with copyright caution; do not redistribute source PDFs unless permitted.",
+      "may_override_tier_1": false
+    },
+    {
+      "source_id": "tie_geography_standard_iii_vi_2024",
+      "title": "Geography Standard III-VI",
+      "official_url": "https://www.tie.go.tz/uploads/documents/en-1727166774-GEOGRAPHY%20STANDARD%20III-VI%20.pdf",
+      "publisher": "Tanzania Institute of Education",
+      "year": 2024,
+      "subject_coverage": "Geography syllabus",
+      "standards_covered": ["III", "IV", "V", "VI"],
+      "source_tier": "tier_1_official_curriculum",
+      "expected_local_snapshot_path": "artifacts/curriculum-snapshots/example/downloaded_sources/tie_geography_standard_iii_vi_2024.pdf",
+      "checksum_required": true,
+      "licensing_caution": "Use for research evidence with copyright caution; do not redistribute source PDFs unless permitted.",
+      "may_override_tier_1": false
+    }
+  ]
+}

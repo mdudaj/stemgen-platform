@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stemgen-platform.local/schemas/curriculum/curriculum_snapshot_manifest.schema.json",
+  "title": "Curriculum Snapshot Manifest",
+  "description": "Describes a reproducible local snapshot of curriculum source registry and downloaded-source evidence.",
+  "type": "object",
+  "required": ["snapshot_id", "created_at", "source_registry_path", "fetch_manifest_path", "downloaded_sources", "checksum_manifest_path"],
+  "properties": {
+    "snapshot_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "source_registry_path": { "type": "string", "minLength": 1 },
+    "fetch_manifest_path": { "type": "string", "minLength": 1 },
+    "downloaded_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_id", "local_path", "sha256", "included_in_git"],
+        "properties": {
+          "source_id": { "type": "string", "minLength": 1 },
+          "local_path": { "type": "string", "minLength": 1 },
+          "sha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+          "included_in_git": { "type": "boolean", "const": false },
+          "copyright_note": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "checksum_manifest_path": { "type": "string", "minLength": 1 },
+    "notes": { "type": "string" }
+  },
+  "additionalProperties": false
+}

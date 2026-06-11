@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stemgen-platform.local/schemas/workflows/evidence_validation_result.schema.json",
+  "title": "Evidence Validation Result",
+  "description": "Validation outcome for workflow evidence before acceptance or projection.",
+  "type": "object",
+  "required": ["validation_id", "submission_id", "status", "validated_at", "errors", "warnings"],
+  "properties": {
+    "validation_id": { "type": "string", "minLength": 1 },
+    "submission_id": { "type": "string", "minLength": 1 },
+    "status": { "type": "string", "enum": ["passed", "failed", "warning"] },
+    "validated_at": { "type": "string", "format": "date-time" },
+    "errors": { "type": "array", "items": { "type": "string" } },
+    "warnings": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stemgen-platform.local/schemas/workflows/research_execution_manifest.schema.json",
+  "title": "Research Execution Manifest",
+  "description": "Compiled manifest used by the stable workflow runner for a published research workflow version.",
+  "type": "object",
+  "required": ["manifest_id", "workflow_id", "workflow_version", "created_at", "steps", "artifact_outputs"],
+  "properties": {
+    "manifest_id": { "type": "string", "minLength": 1 },
+    "workflow_id": { "type": "string", "minLength": 1 },
+    "workflow_version": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "steps": { "type": "array", "items": { "type": "object" } },
+    "artifact_outputs": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": false
+}

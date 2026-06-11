@@ -1,0 +1,59 @@
+{
+  "id": "curriculum_intake",
+  "name": "Curriculum Intake",
+  "version": "0.1.0",
+  "description": "Import official curriculum sources, extract candidate topics, and prepare topic screening.",
+  "roles": {
+    "operator": {
+      "can_start": true,
+      "can_review": true
+    },
+    "reviewer": {
+      "can_start": false,
+      "can_review": true
+    }
+  },
+  "states": [
+    "draft",
+    "source_registered",
+    "snapshot_created",
+    "candidates_generated",
+    "automated_review_completed",
+    "human_reviewed",
+    "accepted",
+    "failed"
+  ],
+  "transitions": [
+    {
+      "id": "register_source",
+      "from": "draft",
+      "to": "source_registered",
+      "actor": "operator"
+    },
+    {
+      "id": "create_snapshot",
+      "from": "source_registered",
+      "to": "snapshot_created",
+      "actor": "operator",
+      "async": true
+    },
+    {
+      "id": "human_topic_selection",
+      "from": "automated_review_completed",
+      "to": "human_reviewed",
+      "actor": "operator"
+    }
+  ],
+  "artifacts": [
+    "source_registry.json",
+    "fetch_manifest.json",
+    "checksums.sha256",
+    "candidate_topic_dataset.json",
+    "topic_selection_decisions.json"
+  ],
+  "audit": {
+    "require_run_id": true,
+    "require_actor": true,
+    "require_timestamp": true
+  }
+}

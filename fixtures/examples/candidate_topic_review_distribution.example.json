@@ -1,0 +1,40 @@
+{
+  "topic_id": "topic-water-cycle",
+  "source_item_ids": ["curriculum-item-water-cycle"],
+  "review_method": "verbalized_sampling",
+  "provider": "example-provider",
+  "model": "example-model",
+  "prompt_template_id": "curriculum-review-v0",
+  "input_hash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "source_snapshot_id": "snapshot-example-20260611",
+  "judgments": [
+    {
+      "label": "highly_suitable",
+      "probability": 0.7,
+      "rationale": "The topic has visible process steps and change over time.",
+      "criteria": {
+        "process_or_sequence": 1.0,
+        "change_over_time": 1.0,
+        "cause_effect": 0.7,
+        "visualizability": 0.9,
+        "primary_level_fit": 0.8,
+        "curriculum_alignment_risk": 0.2
+      }
+    },
+    {
+      "label": "suitable",
+      "probability": 0.3,
+      "rationale": "The topic is suitable but source-page confirmation is still required.",
+      "criteria": {
+        "process_or_sequence": 0.8,
+        "change_over_time": 0.8,
+        "cause_effect": 0.6,
+        "visualizability": 0.8,
+        "primary_level_fit": 0.8,
+        "curriculum_alignment_risk": 0.3
+      }
+    }
+  ],
+  "uncertainty_flags": ["source_reference_requires_human_check"],
+  "human_review_required": true
+}

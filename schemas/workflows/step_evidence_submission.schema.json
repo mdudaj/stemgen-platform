@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stemgen-platform.local/schemas/workflows/step_evidence_submission.schema.json",
+  "title": "Step Evidence Submission",
+  "description": "Raw and normalized evidence captured for a workflow step before projection.",
+  "type": "object",
+  "required": ["submission_id", "run_id", "step_id", "submitted_at", "raw_payload", "normalized_payload", "attachments"],
+  "properties": {
+    "submission_id": { "type": "string", "minLength": 1 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "step_id": { "type": "string", "minLength": 1 },
+    "submitted_at": { "type": "string", "format": "date-time" },
+    "raw_payload": { "type": "object" },
+    "normalized_payload": { "type": "object" },
+    "attachments": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": false
+}
