@@ -1,0 +1,106 @@
+{% extends "app/base_page.html" %}
+
+{% block title_page %}Curriculum{% endblock %}
+{% block shell_title %}Curriculum{% endblock %}
+
+{% block breadcrumbs %}
+  <a href="{% url 'dashboard' %}">Dashboard</a>
+  <span aria-hidden="true">/</span>
+  <span>Curriculum</span>
+{% endblock %}
+
+{% block content %}
+  <div class="kisomo-page kisomo-page-stack">
+    <section class="kisomo-object-header">
+      <div>
+        <p class="kisomo-eyebrow">Curriculum Evidence</p>
+        <h1>Curriculum</h1>
+        <p>Manage official TIE curriculum sources and review reproducible snapshot evidence before extraction.</p>
+      </div>
+      <span class="kisomo-state-chip">{{ active_source_count }} active source{{ active_source_count|pluralize }}</span>
+    </section>
+
+    <section class="kisomo-card-grid" aria-label="Curriculum actions">
+      <article class="kisomo-card kisomo-action-card">
+        <span class="material-icons" aria-hidden="true">source</span>
+        <div class="kisomo-action-card__body">
+          <h2>Manage Sources</h2>
+          <p>Review registered official curriculum and syllabus links, then add or seed source records.</p>
+          <div class="kisomo-action-card__actions">
+            <a class="mdc-button mdc-button--raised kisomo-button" href="{% url 'curriculum-source-list' %}">
+              <span class="mdc-button__ripple"></span>
+              <span class="material-icons mdc-button__icon" aria-hidden="true">source</span>
+              <span class="mdc-button__label">Open Sources</span>
+            </a>
+          </div>
+        </div>
+      </article>
+      <article class="kisomo-card kisomo-action-card">
+        <span class="material-icons" aria-hidden="true">archive</span>
+        <div class="kisomo-action-card__body">
+          <h2>Capture Snapshot</h2>
+          <p>Create a governed snapshot from active registered sources and describe its purpose.</p>
+          <div class="kisomo-action-card__actions">
+            <a class="mdc-button mdc-button--raised kisomo-button" href="{% url 'curriculum-snapshot-capture' %}">
+              <span class="mdc-button__ripple"></span>
+              <span class="material-icons mdc-button__icon" aria-hidden="true">archive</span>
+              <span class="mdc-button__label">Capture Snapshot</span>
+            </a>
+          </div>
+        </div>
+      </article>
+      <article class="kisomo-card kisomo-action-card">
+        <span class="material-icons" aria-hidden="true">inventory_2</span>
+        <div class="kisomo-action-card__body">
+          <h2>Review Snapshots</h2>
+          <p>Inspect captured source manifests, download status, checksums, and validation results.</p>
+          <div class="kisomo-action-card__actions">
+            <a class="mdc-button mdc-button--raised kisomo-button" href="{% url 'curriculum-snapshot-list' %}">
+              <span class="mdc-button__ripple"></span>
+              <span class="material-icons mdc-button__icon" aria-hidden="true">inventory_2</span>
+              <span class="mdc-button__label">Review Snapshots</span>
+            </a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="mdc-card kisomo-tab-surface" aria-label="Curriculum status tabs">
+      {% include "app/partials/material_tabs.html" with tabs=curriculum_tabs active_tab=active_tab tabs_label="Curriculum status views" tab_id_prefix="curriculum-status" %}
+      <div class="kisomo-tab-panel" id="curriculum-status-panel-{{ active_tab }}" role="tabpanel" aria-labelledby="curriculum-status-tab-{{ active_tab }}">
+        {% if active_tab == 'sources' %}
+          <div class="kisomo-tab-panel__header">
+            <span class="material-icons" aria-hidden="true">source</span>
+            <div>
+              <h2>Registered Sources</h2>
+              <p>Official source coverage available for reproducible snapshot capture.</p>
+            </div>
+          </div>
+          <dl class="kisomo-metric-list">
+            <div><dt>Total Sources</dt><dd>{{ source_count }}</dd></div>
+            <div><dt>Active Sources</dt><dd>{{ active_source_count }}</dd></div>
+            <div><dt>Tier 1 Sources</dt><dd>{{ tier1_source_count }}</dd></div>
+          </dl>
+        {% else %}
+          <div class="kisomo-tab-panel__header">
+            <span class="material-icons" aria-hidden="true">inventory_2</span>
+            <div>
+              <h2>Latest Snapshot</h2>
+              <p>Most recent captured evidence package for curriculum extraction.</p>
+            </div>
+          </div>
+          {% if latest_snapshot %}
+            <dl class="kisomo-metric-list">
+              <div><dt>Description</dt><dd>{{ latest_snapshot.description|default:"Source snapshot" }}</dd></div>
+              <div><dt>Status</dt><dd>{{ latest_snapshot.status }}</dd></div>
+              <div><dt>Validation</dt><dd>{{ latest_snapshot.validation_status }}</dd></div>
+              <div><dt>Warnings</dt><dd>{{ latest_warning_count }}</dd></div>
+            </dl>
+          {% else %}
+            <p class="kisomo-empty-state">No source snapshot has been captured yet.</p>
+          {% endif %}
+        {% endif %}
+      </div>
+    </section>
+  </div>
+{% endblock %}

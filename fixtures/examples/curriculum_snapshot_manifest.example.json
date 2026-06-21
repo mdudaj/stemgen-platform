@@ -1,11 +1,11 @@
 {
-  "snapshot_id": "snapshot-example-20260611",
+  "snapshot_id": "11111111-1111-4111-8111-111111111111",
   "created_at": "2026-06-11T00:00:00Z",
   "source_registry_path": "source_registry.json",
   "fetch_manifest_path": "fetch_manifest.json",
   "downloaded_sources": [
     {
-      "source_id": "tie_primary_curriculum_2024",
+      "source_id": "2699cece-a5fd-5eb6-9a84-4ff89f5e04cd",
       "local_path": "downloaded_sources/tie_primary_curriculum_2024.pdf",
       "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "included_in_git": false,

@@ -6,7 +6,7 @@
   "type": "object",
   "required": ["snapshot_id", "created_at", "source_registry_path", "fetch_manifest_path", "downloaded_sources", "checksum_manifest_path"],
   "properties": {
-    "snapshot_id": { "type": "string", "minLength": 1 },
+    "snapshot_id": { "type": "string", "format": "uuid" },
     "created_at": { "type": "string", "format": "date-time" },
     "source_registry_path": { "type": "string", "minLength": 1 },
     "fetch_manifest_path": { "type": "string", "minLength": 1 },
@@ -16,7 +16,7 @@
         "type": "object",
         "required": ["source_id", "local_path", "sha256", "included_in_git"],
         "properties": {
-          "source_id": { "type": "string", "minLength": 1 },
+          "source_id": { "type": "string", "format": "uuid" },
           "local_path": { "type": "string", "minLength": 1 },
           "sha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
           "included_in_git": { "type": "boolean", "const": false },

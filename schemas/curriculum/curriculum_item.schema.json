@@ -6,7 +6,7 @@
   "type": "object",
   "required": ["source_id", "source_url", "source_title", "publisher", "subject", "standard", "topic", "content_reference", "language", "animation_suitability", "provenance"],
   "properties": {
-    "source_id": { "type": "string", "minLength": 1 },
+    "source_id": { "type": "string", "format": "uuid" },
     "source_url": { "type": "string", "format": "uri" },
     "source_title": { "type": "string", "minLength": 1 },
     "publisher": { "type": "string", "const": "Tanzania Institute of Education" },

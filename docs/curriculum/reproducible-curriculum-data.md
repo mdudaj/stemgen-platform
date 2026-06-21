@@ -24,6 +24,8 @@ source registry
 
 ## Snapshot Directory
 
+Slice 1 currently creates the first five entries only:
+
 ```text
 artifacts/curriculum-snapshots/<snapshot_id>/
 ├── source_registry.json
@@ -40,6 +42,8 @@ artifacts/curriculum-snapshots/<snapshot_id>/
 └── topic_selection_decisions.json
 ```
 
+Extraction, normalized items, candidate topics, automated review artifacts, and topic selection decisions are later-slice outputs and are not produced by Slice 1.
+
 ## Artifact Responsibilities
 
 - `source_registry.json`: versioned source list and tiers.
@@ -53,6 +57,20 @@ artifacts/curriculum-snapshots/<snapshot_id>/
 - `candidate_topic_review_distribution.json`: optional automated review distribution.
 - `automated_curriculum_review_manifest.json`: automated review run metadata.
 - `topic_selection_decisions.json`: human acceptance/rejection/needs-revision decisions.
+
+## Slice 1 Command
+
+```bash
+python manage.py curriculum_snapshot create --dry-run --json
+python manage.py curriculum_snapshot create --no-download --validate --json
+python manage.py curriculum_snapshot create --validate --json
+```
+
+`--dry-run` prints the planned snapshot UUID, sources, and artifact paths without writing artifacts or database rows. `--no-download` creates registry and manifest artifacts and marks source downloads as skipped. A real run fetches the official URLs only when the command is run without `--dry-run` and without `--no-download`.
+
+## Dashboard Review
+
+The main dashboard summarizes the latest source snapshot. Staff users can open `/curriculum/snapshots/` to inspect snapshot metadata, validation status, manifest paths, warnings/errors, captured source metadata, stored filenames, file sizes, and SHA-256 checksums.
 
 ## Automated Review Manifest
 

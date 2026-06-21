@@ -55,6 +55,12 @@ class UserInvitationCreateView(LoginRequiredMixin, FormView):
 class UsersRolesView(LoginRequiredMixin, TemplateView):
     template_name = "users/index.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            messages.error(request, "Only superusers can manage configuration.")
+            return redirect("dashboard")
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         User = get_user_model()

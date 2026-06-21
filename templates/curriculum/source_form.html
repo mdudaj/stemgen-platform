@@ -1,0 +1,32 @@
+{% extends "app/base_page.html" %}
+
+{% block title_page %}Add Curriculum Source{% endblock %}
+{% block shell_title %}Add Curriculum Source{% endblock %}
+
+{% block breadcrumbs %}
+  <a href="{% url 'dashboard' %}">Dashboard</a>
+  <span aria-hidden="true">/</span>
+  <a href="{% url 'curriculum-home' %}">Curriculum</a>
+  <span aria-hidden="true">/</span>
+  <a href="{% url 'curriculum-source-list' %}">Sources</a>
+  <span aria-hidden="true">/</span>
+  <span>Add Source</span>
+{% endblock %}
+
+{% block content %}
+  <div class="kisomo-page kisomo-page-stack">
+    <section class="kisomo-object-header">
+      <div>
+        <p class="kisomo-eyebrow">Source Registry</p>
+        <h1>Add Curriculum Source</h1>
+        <p>Provide the official source metadata and operator-facing description.</p>
+      </div>
+      <div class="kisomo-object-header__actions">
+        {% url 'curriculum-source-list' as back_url %}
+        {% include "app/partials/back_action.html" with href=back_url label="Back to Sources" %}
+      </div>
+    </section>
+
+    {% include "app/partials/material_form_card.html" with form=form form_title="Official TIE Source" form_subtitle="A UUID identifier is assigned silently; use the description for human context." submit_label="Save Source" submit_icon="save" %}
+  </div>
+{% endblock %}

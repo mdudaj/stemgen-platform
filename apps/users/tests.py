@@ -156,10 +156,10 @@ class AuthTemplateTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Kisomo Dissertation Platform")
-        self.assertContains(response, "Curriculum workflows will be restored after review")
+        self.assertContains(response, "Curriculum source snapshot evidence is now available for inspection before extraction")
         self.assertContains(response, "kisomo-shell__sidebar")
         self.assertContains(response, "Dashboard")
-        self.assertContains(response, "Users &amp; Roles")
+        self.assertNotContains(response, "Users &amp; Roles")
         self.assertContains(response, "<title>Kisomo | Dashboard</title>", html=True)
         self.assertContains(response, "Notifications")
         self.assertContains(response, "kisomo-shell__account-menu")
@@ -171,6 +171,20 @@ class AuthTemplateTests(TestCase):
         self.assertNotContains(response, "Research Platform")
         self.assertNotContains(response, "<p>Kisomo</p>", html=True)
         self.assertNotContains(response, "vf-page__menu")
+
+    def test_non_superuser_cannot_access_configuration(self):
+        user = get_user_model().objects.create_user(
+            email="operator-config@example.com",
+            password="strong-password-123",
+            is_staff=True,
+        )
+        client = Client()
+        client.force_login(user)
+
+        response = client.get(reverse("users-roles"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["Location"], reverse("dashboard"))
 
     def test_users_roles_page_uses_kisomo_shell(self):
         user = get_user_model().objects.create_superuser(

@@ -10,8 +10,8 @@
         <p class="kisomo-eyebrow">Research Harness</p>
         <h1>Kisomo Dissertation Platform</h1>
         <p>
-          The harness is ready for Google-authenticated operators and evaluators.
-          Curriculum workflows will be restored after review.
+          The harness is ready for authenticated operators and evaluators.
+          Curriculum source snapshot evidence is now available for inspection before extraction.
         </p>
       </div>
       <span class="kisomo-state-chip">Baseline</span>
@@ -27,8 +27,25 @@
         <p>Auth and authenticated surfaces now load separate dissertation UI layers.</p>
       </article>
       <article class="kisomo-card">
-        <h2>Next Slice</h2>
-        <p>Curriculum intake and topic-brief runs are intentionally held for review.</p>
+        <h2>Curriculum Sources</h2>
+        <p>{{ curriculum_source_count }} registered source{{ curriculum_source_count|pluralize }} are available for Tier 1 snapshot evidence.</p>
+        {% if latest_curriculum_snapshot %}
+          <p>
+            Latest snapshot:
+            <strong>{{ latest_curriculum_snapshot.description|default:"Source snapshot" }}</strong>
+            ({{ latest_curriculum_snapshot.status }}, validation {{ latest_curriculum_snapshot.validation_status }}).
+          </p>
+          <p>
+            Downloaded {{ latest_curriculum_snapshot.downloaded_count }} of {{ latest_curriculum_snapshot.source_count }};
+            failed {{ latest_curriculum_snapshot.failed_count }};
+            warnings {{ latest_curriculum_warning_count }}.
+          </p>
+        {% else %}
+          <p>No curriculum source snapshot has been captured yet.</p>
+        {% endif %}
+        {% if request.user.is_staff %}
+          <p><a href="{% url 'curriculum-home' %}">Open Curriculum</a></p>
+        {% endif %}
       </article>
     </section>
   </div>

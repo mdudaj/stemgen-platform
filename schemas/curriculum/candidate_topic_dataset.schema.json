@@ -7,7 +7,7 @@
   "required": ["dataset_id", "source_snapshot_id", "created_at", "topics"],
   "properties": {
     "dataset_id": { "type": "string", "minLength": 1 },
-    "source_snapshot_id": { "type": "string", "minLength": 1 },
+    "source_snapshot_id": { "type": "string", "format": "uuid" },
     "created_at": { "type": "string", "format": "date-time" },
     "topics": {
       "type": "array",

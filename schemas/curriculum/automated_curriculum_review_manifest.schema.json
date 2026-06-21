@@ -6,7 +6,7 @@
   "type": "object",
   "required": ["snapshot_id", "review_run_id", "created_at", "deterministic_dataset", "review_artifacts", "provider", "model", "prompt_template_id", "candidate_count", "input_hash", "output_hash", "human_review_required"],
   "properties": {
-    "snapshot_id": { "type": "string", "minLength": 1 },
+    "snapshot_id": { "type": "string", "format": "uuid" },
     "review_run_id": { "type": "string", "minLength": 1 },
     "created_at": { "type": "string", "format": "date-time" },
     "deterministic_dataset": { "type": "string", "minLength": 1 },

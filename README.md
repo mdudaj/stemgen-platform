@@ -6,7 +6,8 @@ feasibility evidence.
 
 ## Current State
 
-This rebuild currently includes the baseline harness only:
+This rebuild currently includes the baseline harness plus Slice 1 curriculum
+source snapshot evidence:
 
 - Django project scaffold
 - custom email-based user model
@@ -16,15 +17,80 @@ This rebuild currently includes the baseline harness only:
 - Viewflow auth shell
 - left-panel Kisomo login screen using `static/img/` assets
 - separated auth and authenticated design-system CSS layers
+- TIE curriculum source registry fixture
+- reproducible curriculum source snapshot command
+- schema-validated source registry, fetch manifest, checksum manifest, and
+  curriculum snapshot manifest artifacts
+- staff-only dashboard pages for read-only curriculum snapshot artifact review
 
-Curriculum intake, topic-brief runs, artifact review, replay, and export slices
-are intentionally held for review before being restored.
+Curriculum extraction, topic screening, automated review, topic acceptance,
+generation runs, expert review, WhatsApp messaging, replay, and export bundles
+remain out of scope until later slices.
 
 ## Bootstrap
 
 ```bash
 ./init.sh
 ```
+
+Apply migrations before using the dashboard or snapshot command against a local
+database:
+
+```bash
+.venv/bin/python manage.py migrate
+```
+
+## Curriculum Source Snapshots
+
+Seeded TIE source metadata lives in:
+
+```text
+fixtures/curriculum/tie_sources.json
+```
+
+Dry-run a snapshot without writing artifacts or database rows:
+
+```bash
+.venv/bin/python manage.py curriculum_snapshot create --dry-run --json
+```
+
+Create an offline no-download snapshot for validation and dashboard review:
+
+```bash
+.venv/bin/python manage.py curriculum_snapshot create --snapshot-id local-no-download --no-download --validate --json
+```
+
+Create a real snapshot when network access is intentionally allowed:
+
+```bash
+.venv/bin/python manage.py curriculum_snapshot create --validate --json
+```
+
+Snapshot artifacts are written under:
+
+```text
+artifacts/curriculum-snapshots/<snapshot_id>/
+├── source_registry.json
+├── fetch_manifest.json
+├── downloaded_sources/
+├── checksums.sha256
+└── curriculum_snapshot_manifest.json
+```
+
+Validate schemas, fixtures, and any existing snapshot manifests:
+
+```bash
+python3 scripts/validate_json.py
+```
+
+Authenticated staff users can inspect snapshots at:
+
+```text
+/curriculum/snapshots/
+```
+
+The dashboard card links to read-only artifact review. It does not approve
+sources, accept topics, extract curriculum text, or start generation.
 
 ## Local Preview
 
@@ -99,4 +165,3 @@ These artifacts define the next implementation slices for reproducible TIE curri
 
 
 The planning artifacts are aligned with the proposal PDF under `/home/jmduda/Desktop/UDSM/Dissertation/` and the initial platform ADRs from `/home/jmduda/Desktop/FikraBytez/dissertation/docs/adr/`, now copied into `docs/adr/0001-0006*.md`.
-

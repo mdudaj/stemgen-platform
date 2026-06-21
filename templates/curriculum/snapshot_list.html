@@ -1,0 +1,67 @@
+{% extends "app/base_page.html" %}
+
+{% block title_page %}Curriculum Snapshots{% endblock %}
+{% block shell_title %}Curriculum Snapshots{% endblock %}
+
+{% block breadcrumbs %}
+  <a href="{% url 'dashboard' %}">Dashboard</a>
+  <span aria-hidden="true">/</span>
+  <a href="{% url 'curriculum-home' %}">Curriculum</a>
+  <span aria-hidden="true">/</span>
+  <span>Snapshots</span>
+{% endblock %}
+
+{% block content %}
+  <div class="kisomo-page kisomo-page-stack">
+    <section class="kisomo-object-header">
+      <div>
+        <p class="kisomo-eyebrow">Curriculum Evidence</p>
+        <h1>Curriculum Source Snapshots</h1>
+        <p>Inspect reproducible TIE source snapshot artifacts before extraction or topic screening.</p>
+      </div>
+      <div class="kisomo-object-header__actions">
+        {% url 'curriculum-home' as back_url %}
+        {% include "app/partials/back_action.html" with href=back_url label="Back to Curriculum" %}
+      </div>
+    </section>
+
+    <article class="kisomo-card kisomo-table-card">
+      <table class="kisomo-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Created at</th>
+            <th>Completed at</th>
+            <th>Sources</th>
+            <th>Downloaded</th>
+            <th>Failed</th>
+            <th>Validation</th>
+            <th>Warnings</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for snapshot in snapshots %}
+            <tr>
+              <td>{{ snapshot.description|default:"Source snapshot" }}</td>
+              <td>{{ snapshot.status }}</td>
+              <td>{{ snapshot.created_at }}</td>
+              <td>{{ snapshot.completed_at|default:"-" }}</td>
+              <td>{{ snapshot.source_count }}</td>
+              <td>{{ snapshot.downloaded_count }}</td>
+              <td>{{ snapshot.failed_count }}</td>
+              <td>{{ snapshot.validation_status }}</td>
+              <td>{{ snapshot.warnings|length }}</td>
+              <td><a href="{% url 'curriculum-snapshot-detail' snapshot.snapshot_id %}">View</a></td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="10">No curriculum source snapshots have been captured.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  </div>
+{% endblock %}

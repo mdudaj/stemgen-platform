@@ -1,0 +1,26 @@
+<nav class="mdc-tab-bar kisomo-material-tabs" role="tablist" aria-label="{{ tabs_label }}">
+  <div class="mdc-tab-scroller">
+    <div class="mdc-tab-scroller__scroll-area">
+      <div class="mdc-tab-scroller__scroll-content">
+        {% for tab in tabs %}
+          <a class="mdc-tab kisomo-material-tabs__tab{% if active_tab == tab.key %} mdc-tab--active kisomo-material-tabs__tab--active{% endif %}"
+             id="{{ tab_id_prefix }}-tab-{{ tab.key }}"
+             role="tab"
+             aria-selected="{% if active_tab == tab.key %}true{% else %}false{% endif %}"
+             aria-controls="{{ tab_id_prefix }}-panel-{{ tab.key }}"
+             tabindex="{% if active_tab == tab.key %}0{% else %}-1{% endif %}"
+             href="{{ tab.url }}">
+            <span class="mdc-tab__content">
+              {% if tab.icon %}<span class="material-icons mdc-tab__icon" aria-hidden="true">{{ tab.icon }}</span>{% endif %}
+              <span class="mdc-tab__text-label">{{ tab.label }}</span>
+            </span>
+            <span class="mdc-tab-indicator{% if active_tab == tab.key %} mdc-tab-indicator--active{% endif %}">
+              <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+            </span>
+            <span class="mdc-tab__ripple"></span>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</nav>
