@@ -221,7 +221,15 @@ class CurriculumDashboardTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Curriculum Sources")
         self.assertContains(response, "Dashboard source evidence")
+        self.assertContains(response, "kisomo-page kisomo-page-stack")
+        self.assertContains(response, 'aria-labelledby="dashboard-curriculum-title"')
+        self.assertContains(response, "kisomo-metric-list")
+        self.assertContains(response, "Latest Snapshot")
+        self.assertContains(response, "Downloaded")
+        self.assertContains(response, "2 / 4")
         self.assertContains(response, "Open Curriculum")
+        self.assertContains(response, "kisomo-card-actions")
+        self.assertContains(response, "mdc-button__icon")
         self.assertContains(response, reverse("curriculum-home"))
 
     def test_snapshot_list_page_requires_authentication(self):

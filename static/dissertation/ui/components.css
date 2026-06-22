@@ -29,6 +29,20 @@ a {
   min-width: 0;
 }
 
+.kisomo-content-stack {
+  display: grid;
+  gap: var(--kisomo-space-4);
+}
+
+.kisomo-content-stack > * {
+  min-width: 0;
+}
+
+.kisomo-content-stack > :is(h1, h2, h3, p, dl, ul, ol) {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 .kisomo-eyebrow {
   margin: 0 0 var(--kisomo-space-2);
   color: var(--kisomo-color-secondary);
@@ -130,9 +144,12 @@ a {
   min-height: 0;
 }
 
-.kisomo-action-card__actions {
+.kisomo-action-card__actions,
+.kisomo-card-actions {
   display: flex;
   align-items: flex-end;
+  gap: var(--kisomo-space-3);
+  flex-wrap: wrap;
   min-height: 42px;
   padding-top: var(--kisomo-space-4);
 }

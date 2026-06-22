@@ -4,7 +4,7 @@
 {% block shell_title %}Dashboard{% endblock %}
 
 {% block content %}
-  <div class="kisomo-page">
+  <div class="kisomo-page kisomo-page-stack">
     <section class="kisomo-object-header">
       <div>
         <p class="kisomo-eyebrow">Research Harness</p>
@@ -17,36 +17,51 @@
       <span class="kisomo-state-chip">Baseline</span>
     </section>
 
-    <section class="kisomo-card-grid" aria-label="Platform baseline">
-      <article class="kisomo-card">
+    <section class="kisomo-card-grid kisomo-card-grid--two" aria-label="Platform baseline">
+      <article class="kisomo-card kisomo-content-stack">
         <h2>Authentication</h2>
         <p>Google OAuth2 is wired through django-allauth on top of the custom email user model.</p>
       </article>
-      <article class="kisomo-card">
+      <article class="kisomo-card kisomo-content-stack">
         <h2>Design System</h2>
         <p>Auth and authenticated surfaces now load separate dissertation UI layers.</p>
       </article>
-      <article class="kisomo-card">
-        <h2>Curriculum Sources</h2>
+    </section>
+
+    <section class="kisomo-card kisomo-content-stack" aria-labelledby="dashboard-curriculum-title">
+      <div class="kisomo-tab-panel__header">
+        <span class="material-icons" aria-hidden="true">source</span>
+        <div>
+          <h2 id="dashboard-curriculum-title">Curriculum Sources</h2>
+          <p>Official source coverage and latest snapshot readiness for extraction.</p>
+        </div>
+      </div>
+
+      <div class="kisomo-content-stack">
         <p>{{ curriculum_source_count }} registered source{{ curriculum_source_count|pluralize }} are available for Tier 1 snapshot evidence.</p>
         {% if latest_curriculum_snapshot %}
-          <p>
-            Latest snapshot:
-            <strong>{{ latest_curriculum_snapshot.description|default:"Source snapshot" }}</strong>
-            ({{ latest_curriculum_snapshot.status }}, validation {{ latest_curriculum_snapshot.validation_status }}).
-          </p>
-          <p>
-            Downloaded {{ latest_curriculum_snapshot.downloaded_count }} of {{ latest_curriculum_snapshot.source_count }};
-            failed {{ latest_curriculum_snapshot.failed_count }};
-            warnings {{ latest_curriculum_warning_count }}.
-          </p>
+          <dl class="kisomo-metric-list">
+            <div><dt>Latest Snapshot</dt><dd>{{ latest_curriculum_snapshot.description|default:"Source snapshot" }}</dd></div>
+            <div><dt>Status</dt><dd>{{ latest_curriculum_snapshot.status }}</dd></div>
+            <div><dt>Validation</dt><dd>{{ latest_curriculum_snapshot.validation_status }}</dd></div>
+            <div><dt>Downloaded</dt><dd>{{ latest_curriculum_snapshot.downloaded_count }} / {{ latest_curriculum_snapshot.source_count }}</dd></div>
+            <div><dt>Failures</dt><dd>{{ latest_curriculum_snapshot.failed_count }}</dd></div>
+            <div><dt>Warnings</dt><dd>{{ latest_curriculum_warning_count }}</dd></div>
+          </dl>
         {% else %}
-          <p>No curriculum source snapshot has been captured yet.</p>
+          <p class="kisomo-empty-state">No curriculum source snapshot has been captured yet.</p>
         {% endif %}
+
         {% if request.user.is_staff %}
-          <p><a href="{% url 'curriculum-home' %}">Open Curriculum</a></p>
+          <div class="kisomo-card-actions">
+            <a class="mdc-button mdc-button--raised kisomo-button" href="{% url 'curriculum-home' %}">
+              <span class="mdc-button__ripple"></span>
+              <span class="material-icons mdc-button__icon" aria-hidden="true">school</span>
+              <span class="mdc-button__label">Open Curriculum</span>
+            </a>
+          </div>
         {% endif %}
-      </article>
+      </div>
     </section>
   </div>
 {% endblock %}
