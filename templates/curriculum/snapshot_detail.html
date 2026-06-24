@@ -1,0 +1,113 @@
+{% extends "app/base_page.html" %}
+
+{% block title_page %}Curriculum Snapshot{% endblock %}
+{% block shell_title %}Curriculum Snapshot{% endblock %}
+
+{% block breadcrumbs %}
+  <a href="{% url 'dashboard' %}">Dashboard</a>
+  <span aria-hidden="true">/</span>
+  <a href="{% url 'curriculum-home' %}">Curriculum</a>
+  <span aria-hidden="true">/</span>
+  <a href="{% url 'curriculum-snapshot-list' %}">Snapshots</a>
+  <span aria-hidden="true">/</span>
+  <span>Snapshot Detail</span>
+{% endblock %}
+
+{% block content %}
+  <div class="kisomo-page kisomo-page-stack">
+    <section class="kisomo-object-header">
+      <div>
+        <p class="kisomo-eyebrow">Review captured artifacts</p>
+        <h1>Curriculum Snapshot</h1>
+        <p>{{ snapshot.description|default:"Read-only source snapshot evidence. Ready for extraction only after manifest inspection." }}</p>
+      </div>
+      <div class="kisomo-object-header__actions">
+        {% url 'curriculum-snapshot-list' as back_url %}
+        {% include "app/partials/back_action.html" with href=back_url label="Back to Snapshots" %}
+      </div>
+    </section>
+
+    <section class="kisomo-card-grid">
+      <article class="kisomo-card">
+        <h2>Snapshot Metadata</h2>
+        <p>Description: <strong>{{ snapshot.description|default:"-" }}</strong></p>
+        <p>Status: <strong>{{ snapshot.status }}</strong></p>
+        <p>Validation status: <strong>{{ snapshot.validation_status }}</strong></p>
+        <p>Created: {{ snapshot.created_at }}</p>
+        <p>Completed: {{ snapshot.completed_at|default:"-" }}</p>
+        <p>Sources: {{ snapshot.source_count }}</p>
+        <p>Downloaded: {{ snapshot.downloaded_count }}</p>
+        <p>Failed: {{ snapshot.failed_count }}</p>
+      </article>
+      <article class="kisomo-card">
+        <h2>Artifact Paths</h2>
+        <p>Root: <code>{{ snapshot.artifact_root }}</code></p>
+        <p>Source registry: <code>{{ snapshot.artifact_root }}/source_registry.json</code></p>
+        <p>Fetch manifest: <code>{{ snapshot.fetch_manifest_path }}</code></p>
+        <p>Checksums: <code>{{ snapshot.checksum_manifest_path }}</code></p>
+        <p>Snapshot manifest: <code>{{ snapshot.snapshot_manifest_path }}</code></p>
+      </article>
+    </section>
+
+    <section class="kisomo-card-grid">
+      <article class="kisomo-card">
+        <h2>Warnings</h2>
+        {% if snapshot.warnings %}
+          <ul>
+            {% for warning in snapshot.warnings %}
+              <li>{{ warning }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No warnings recorded.</p>
+        {% endif %}
+      </article>
+      <article class="kisomo-card">
+        <h2>Validation Errors</h2>
+        {% if snapshot.validation_errors %}
+          <ul>
+            {% for error in snapshot.validation_errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No validation errors recorded.</p>
+        {% endif %}
+      </article>
+    </section>
+
+    <article class="kisomo-card">
+      <h2>Captured Sources</h2>
+      <table class="kisomo-table">
+        <thead>
+          <tr>
+            <th>Source title</th>
+            <th>Subject</th>
+            <th>Standards covered</th>
+            <th>Official URL</th>
+            <th>Stored filename</th>
+            <th>Size</th>
+            <th>SHA-256</th>
+            <th>Status</th>
+            <th>Error message</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in snapshot.captured_sources.all %}
+            <tr>
+              <td>{{ entry.source.title }}</td>
+              <td>{{ entry.source.subject }}</td>
+              <td>{{ entry.source.standards_covered|join:", " }}</td>
+              <td><code>{{ entry.original_url }}</code></td>
+              <td><code>{{ entry.stored_filename|default:"-" }}</code></td>
+              <td>{{ entry.size_bytes }}</td>
+              <td><code>{{ entry.sha256|default:"-" }}</code></td>
+              <td>{{ entry.status }}</td>
+              <td>{{ entry.error_message|default:"-" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  </div>
+{% endblock %}

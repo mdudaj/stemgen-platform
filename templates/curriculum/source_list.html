@@ -1,0 +1,105 @@
+{% extends "app/base_page.html" %}
+
+{% block title_page %}Curriculum Sources{% endblock %}
+{% block shell_title %}Curriculum Sources{% endblock %}
+
+{% block breadcrumbs %}
+  <a href="{% url 'dashboard' %}">Dashboard</a>
+  <span aria-hidden="true">/</span>
+  <a href="{% url 'curriculum-home' %}">Curriculum</a>
+  <span aria-hidden="true">/</span>
+  <span>Sources</span>
+{% endblock %}
+
+{% block content %}
+  <div class="kisomo-page kisomo-page-stack">
+    <section class="kisomo-object-header">
+      <div>
+        <p class="kisomo-eyebrow">Source Registry</p>
+        <h1>Curriculum Sources</h1>
+        <p>Review official TIE curriculum and syllabus links before snapshot capture.</p>
+      </div>
+      <div class="kisomo-object-header__actions">
+        {% url 'curriculum-home' as back_url %}
+        {% include "app/partials/back_action.html" with href=back_url label="Back to Curriculum" %}
+      </div>
+    </section>
+
+    {% if messages %}
+      <section aria-label="Messages">
+        {% for message in messages %}
+          <p class="kisomo-state-chip">{{ message }}</p>
+        {% endfor %}
+      </section>
+    {% endif %}
+
+    <section class="kisomo-card-grid kisomo-card-grid--two" aria-label="Source actions">
+      <article class="kisomo-card kisomo-action-card">
+        <span class="material-icons" aria-hidden="true">library_add</span>
+        <div class="kisomo-action-card__body">
+          <h2>Add Source</h2>
+          <p>Add one official TIE curriculum or syllabus link. A UUID identifier is assigned silently.</p>
+          <div class="kisomo-action-card__actions">
+            <a class="mdc-button mdc-button--raised kisomo-button" href="{% url 'curriculum-source-create' %}">
+              <span class="mdc-button__ripple"></span>
+              <span class="material-icons mdc-button__icon" aria-hidden="true">library_add</span>
+              <span class="mdc-button__label">Add Source</span>
+            </a>
+          </div>
+        </div>
+      </article>
+      <article class="kisomo-card kisomo-action-card">
+        <span class="material-icons" aria-hidden="true">playlist_add</span>
+        <div class="kisomo-action-card__body">
+          <h2>Seed Defaults</h2>
+          <p>Register or refresh the four approved Tier 1 TIE source records.</p>
+          <div class="kisomo-action-card__actions">
+            <form method="post">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="seed_sources">
+              <button class="mdc-button mdc-button--raised kisomo-button" type="submit">
+                <span class="mdc-button__ripple"></span>
+                <span class="material-icons mdc-button__icon" aria-hidden="true">playlist_add</span>
+                <span class="mdc-button__label">Seed TIE Defaults</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <article class="kisomo-card kisomo-table-card">
+      <h2>Registered Sources</h2>
+      <table class="kisomo-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Subject</th>
+            <th>Standards</th>
+            <th>Tier</th>
+            <th>Active</th>
+            <th>URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for source in sources %}
+            <tr>
+              <td>{{ source.title }}</td>
+              <td>{{ source.description|default:"-" }}</td>
+              <td>{{ source.subject }}</td>
+              <td>{{ source.standards_covered|join:", " }}</td>
+              <td>{{ source.source_tier }}</td>
+              <td>{{ source.is_active|yesno:"Yes,No" }}</td>
+              <td><a href="{{ source.official_url }}">TIE PDF</a></td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="7">No curriculum sources have been registered.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  </div>
+{% endblock %}

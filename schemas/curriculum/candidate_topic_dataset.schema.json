@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stemgen-platform.local/schemas/curriculum/candidate_topic_dataset.schema.json",
+  "title": "Candidate Topic Dataset",
+  "description": "Rule-screened candidate topics derived from deterministic curriculum items.",
+  "type": "object",
+  "required": ["dataset_id", "source_snapshot_id", "created_at", "topics"],
+  "properties": {
+    "dataset_id": { "type": "string", "minLength": 1 },
+    "source_snapshot_id": { "type": "string", "format": "uuid" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "topics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["topic_id", "source_item_ids", "topic", "screening_signals", "review_status"],
+        "properties": {
+          "topic_id": { "type": "string", "minLength": 1 },
+          "source_item_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "topic": { "type": "string", "minLength": 1 },
+          "screening_signals": {
+            "type": "array",
+            "items": { "type": "string", "enum": ["process", "sequence", "change_over_time", "cause_effect", "spatial_relationship", "abstract_relationship", "measurement_transformation", "system_interaction"] }
+          },
+          "deprioritization_reasons": { "type": "array", "items": { "type": "string" } },
+          "review_status": { "type": "string", "enum": ["pending", "screened", "human_review_required", "accepted", "rejected", "needs_revision"] }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

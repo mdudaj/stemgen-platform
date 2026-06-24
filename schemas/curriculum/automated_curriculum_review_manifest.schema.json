@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stemgen-platform.local/schemas/curriculum/automated_curriculum_review_manifest.schema.json",
+  "title": "Automated Curriculum Review Manifest",
+  "description": "Run manifest for optional automated curriculum review artifacts.",
+  "type": "object",
+  "required": ["snapshot_id", "review_run_id", "created_at", "deterministic_dataset", "review_artifacts", "provider", "model", "prompt_template_id", "candidate_count", "input_hash", "output_hash", "human_review_required"],
+  "properties": {
+    "snapshot_id": { "type": "string", "format": "uuid" },
+    "review_run_id": { "type": "string", "minLength": 1 },
+    "created_at": { "type": "string", "format": "date-time" },
+    "deterministic_dataset": { "type": "string", "minLength": 1 },
+    "review_artifacts": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "provider": { "type": "string" },
+    "model": { "type": "string" },
+    "prompt_template_id": { "type": "string", "minLength": 1 },
+    "candidate_count": { "type": "integer", "minimum": 0 },
+    "temperature": { "type": ["number", "null"], "minimum": 0 },
+    "top_p": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "input_hash": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+    "output_hash": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+    "failure_mode": { "type": ["string", "null"] },
+    "human_review_required": { "type": "boolean", "const": true }
+  },
+  "additionalProperties": false
+}

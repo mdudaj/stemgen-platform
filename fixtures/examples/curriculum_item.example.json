@@ -1,0 +1,30 @@
+{
+  "source_id": "056f10be-1eae-5562-9113-6ab73436fdcf",
+  "source_url": "https://www.tie.go.tz/uploads/documents/en-1727175605-Science%20Syllabus%20For%20Primary%20Education%20Standard%20III%20-%20VI.pdf",
+  "source_title": "Science Syllabus For Primary Education Standard III - VI",
+  "publisher": "Tanzania Institute of Education",
+  "subject": "Science",
+  "standard": "III",
+  "topic": "Water cycle",
+  "subtopic": "Evaporation and condensation",
+  "learning_objective": "Describe changes in water state in the environment.",
+  "competency": "Observe and explain natural processes.",
+  "content_reference": {
+    "page": 12,
+    "section": "Example section",
+    "table": null
+  },
+  "language": "en",
+  "animation_suitability": {
+    "candidate": true,
+    "rationale": "The topic involves a sequence and change over time.",
+    "screening_method": "rule_based",
+    "review_status": "pending"
+  },
+  "provenance": {
+    "retrieved_at": "2026-06-11T00:00:00Z",
+    "checksum": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "extractor_version": "manual-example-0.1.0",
+    "manual_reviewed_by": null
+  }
+}

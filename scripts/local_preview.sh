@@ -5,7 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 PREVIEW_PORT="${DISSERTATION_PREVIEW_PORT:-${PORT:-8000}}"
-PREVIEW_BIND_HOST="${DISSERTATION_PREVIEW_HOST:-0.0.0.0}"
+PREVIEW_BIND_HOST="${DISSERTATION_PREVIEW_HOST:-127.0.0.1}"
 
 export DATABASE_URL="${DATABASE_URL:-postgresql://dissertation:dissertation@localhost:15432/dissertation}"
 export REDIS_URL="${REDIS_URL:-redis://127.0.0.1:16379/1}"

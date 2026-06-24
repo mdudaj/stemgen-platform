@@ -11,8 +11,8 @@
 {% block extrahead %}
   {{ block.super }}
   <link rel="stylesheet" href="{% static 'dissertation/ui/tokens.css' %}" data-turbo-track="reload">
-  <link rel="stylesheet" href="{% static 'dissertation/ui/components.css' %}" data-turbo-track="reload">
-  <link rel="stylesheet" href="{% static 'dissertation/ui/authenticated.css' %}" data-turbo-track="reload">
+  <link rel="stylesheet" href="{% static 'dissertation/ui/components.css' %}?v=20260622-1" data-turbo-track="reload">
+  <link rel="stylesheet" href="{% static 'dissertation/ui/authenticated.css' %}?v=20260621-1" data-turbo-track="reload">
 {% endblock %}
 
 {% block js %}
@@ -33,20 +33,28 @@
             <span class="material-icons" aria-hidden="true">dashboard</span>
             <span>Dashboard</span>
           </a>
+          {% if request.user.is_staff %}
+            <a class="kisomo-shell__nav-item{% if request.resolver_match.url_name == 'curriculum-home' or request.resolver_match.url_name == 'curriculum-intake' or request.resolver_match.url_name == 'curriculum-snapshot-list' or request.resolver_match.url_name == 'curriculum-snapshot-detail' %} kisomo-shell__nav-item--active{% endif %}" href="{% url 'curriculum-home' %}">
+              <span class="material-icons" aria-hidden="true">school</span>
+              <span>Curriculum</span>
+            </a>
+          {% endif %}
         </div>
 
-        <section class="kisomo-shell__nav-section" aria-labelledby="configuration-label">
-          <h2 id="configuration-label">
-            <span class="kisomo-shell__section-icon" aria-hidden="true">
-              <span class="material-icons">construction</span>
-            </span>
-            <span>Configuration</span>
-          </h2>
-          <a class="kisomo-shell__nav-item{% if request.resolver_match.url_name == 'users-roles' %} kisomo-shell__nav-item--active{% endif %}" href="{% url 'users-roles' %}">
-            <span class="material-icons" aria-hidden="true">manage_accounts</span>
-            <span>Users &amp; Roles</span>
-          </a>
-        </section>
+        {% if request.user.is_superuser %}
+          <section class="kisomo-shell__nav-section" aria-labelledby="configuration-label">
+            <h2 id="configuration-label">
+              <span class="kisomo-shell__section-icon" aria-hidden="true">
+                <span class="material-icons">construction</span>
+              </span>
+              <span>Configuration</span>
+            </h2>
+            <a class="kisomo-shell__nav-item{% if request.resolver_match.url_name == 'users-roles' %} kisomo-shell__nav-item--active{% endif %}" href="{% url 'users-roles' %}">
+              <span class="material-icons" aria-hidden="true">manage_accounts</span>
+              <span>Users &amp; Roles</span>
+            </a>
+          </section>
+        {% endif %}
       </nav>
     </aside>
 

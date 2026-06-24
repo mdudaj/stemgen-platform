@@ -1,0 +1,135 @@
+{% extends "app/base_page.html" %}
+
+{% block title_page %}Curriculum Intake{% endblock %}
+{% block shell_title %}Curriculum Intake{% endblock %}
+
+{% block breadcrumbs %}
+  <a href="{% url 'dashboard' %}">Dashboard</a>
+  <span aria-hidden="true">/</span>
+  <a href="{% url 'curriculum-home' %}">Curriculum</a>
+  <span aria-hidden="true">/</span>
+  <span>Source Intake</span>
+{% endblock %}
+
+{% block content %}
+  <div class="kisomo-page">
+    <section class="kisomo-object-header">
+      <div>
+        <p class="kisomo-eyebrow">Tier 1 Curriculum Evidence</p>
+        <h1>Source Intake</h1>
+        <p>Register official TIE curriculum and syllabus links, then capture reproducible source snapshots before extraction.</p>
+      </div>
+      <a class="kisomo-icon-button" href="{% url 'curriculum-home' %}" aria-label="Back to Curriculum">
+        <span class="material-icons" aria-hidden="true">arrow_back</span>
+      </a>
+    </section>
+
+    {% if messages %}
+      <section aria-label="Messages">
+        {% for message in messages %}
+          <p class="kisomo-state-chip">{{ message }}</p>
+        {% endfor %}
+      </section>
+    {% endif %}
+
+    <section class="kisomo-card-grid kisomo-card-grid--two" aria-label="Curriculum actions">
+      <article class="kisomo-card kisomo-action-card">
+        <span class="material-icons" aria-hidden="true">inventory_2</span>
+        <div>
+          <h2>Snapshots</h2>
+          <p>Review captured source evidence, validation, and checksum manifests.</p>
+          <a class="kisomo-button" href="{% url 'curriculum-snapshot-list' %}">Review Snapshots</a>
+        </div>
+      </article>
+      <article class="kisomo-card">
+        <h2>Registered Sources</h2>
+        <p>{{ source_count }} total; {{ active_source_count }} active; {{ tier1_source_count }} Tier 1.</p>
+        <form class="kisomo-form" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="seed_sources">
+          <button class="kisomo-button" type="submit">
+            <span class="material-icons" aria-hidden="true">playlist_add</span>
+            <span>Seed TIE Defaults</span>
+          </button>
+        </form>
+      </article>
+    </section>
+
+    <section class="kisomo-card-grid kisomo-card-grid--two" aria-label="Curriculum source actions">
+      <article class="kisomo-card">
+        <h2>Add or Update Source</h2>
+        <form class="kisomo-form" method="post" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add_source">
+          {% if source_form.non_field_errors %}<div class="kisomo-form__errors">{{ source_form.non_field_errors }}</div>{% endif %}
+          {% for field in source_form %}
+            <label class="kisomo-form__field" for="{{ field.id_for_label }}">
+              <span>{{ field.label }}</span>
+              {{ field }}
+              {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+              {% if field.errors %}<small>{{ field.errors }}</small>{% endif %}
+            </label>
+          {% endfor %}
+          <button class="kisomo-button" type="submit">
+            <span class="material-icons" aria-hidden="true">save</span>
+            <span>Save Source</span>
+          </button>
+        </form>
+      </article>
+      <article class="kisomo-card">
+        <h2>Capture Snapshot</h2>
+        <form class="kisomo-form" method="post" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="capture_snapshot">
+          {% if capture_form.non_field_errors %}<div class="kisomo-form__errors">{{ capture_form.non_field_errors }}</div>{% endif %}
+          {% for field in capture_form %}
+            <label class="kisomo-form__field" for="{{ field.id_for_label }}">
+              <span>{{ field.label }}</span>
+              {{ field }}
+              {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+              {% if field.errors %}<small>{{ field.errors }}</small>{% endif %}
+            </label>
+          {% endfor %}
+          <button class="kisomo-button" type="submit">
+            <span class="material-icons" aria-hidden="true">archive</span>
+            <span>Capture Source Snapshot</span>
+          </button>
+        </form>
+      </article>
+    </section>
+
+    <article class="kisomo-card kisomo-table-card">
+      <h2>Source Registry</h2>
+      <table class="kisomo-table">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Subject</th>
+            <th>Standards</th>
+            <th>Tier</th>
+            <th>Active</th>
+            <th>URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for source in sources %}
+            <tr>
+              <td>{{ source.title }}</td>
+              <td>{{ source.description|default:"-" }}</td>
+              <td>{{ source.subject }}</td>
+              <td>{{ source.standards_covered|join:", " }}</td>
+              <td>{{ source.source_tier }}</td>
+              <td>{{ source.is_active|yesno:"Yes,No" }}</td>
+              <td><a href="{{ source.official_url }}">TIE PDF</a></td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="7">No curriculum sources have been registered.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+  </div>
+{% endblock %}

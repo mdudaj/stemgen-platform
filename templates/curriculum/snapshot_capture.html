@@ -1,0 +1,35 @@
+{% extends "app/base_page.html" %}
+
+{% block title_page %}Capture Curriculum Snapshot{% endblock %}
+{% block shell_title %}Capture Curriculum Snapshot{% endblock %}
+
+{% block breadcrumbs %}
+  <a href="{% url 'dashboard' %}">Dashboard</a>
+  <span aria-hidden="true">/</span>
+  <a href="{% url 'curriculum-home' %}">Curriculum</a>
+  <span aria-hidden="true">/</span>
+  <span>Capture Snapshot</span>
+{% endblock %}
+
+{% block content %}
+  <div class="kisomo-page kisomo-page-stack">
+    <section class="kisomo-object-header">
+      <div>
+        <p class="kisomo-eyebrow">Snapshot Evidence</p>
+        <h1>Capture Snapshot</h1>
+        <p>Create a reproducible snapshot from {{ active_source_count }} active source{{ active_source_count|pluralize }} and describe why it was captured.</p>
+      </div>
+      <div class="kisomo-object-header__actions">
+        {% url 'curriculum-home' as back_url %}
+        {% include "app/partials/back_action.html" with href=back_url label="Back to Curriculum" %}
+        <a class="mdc-button mdc-button--raised kisomo-button kisomo-button--header" href="{% url 'curriculum-source-list' %}">
+          <span class="mdc-button__ripple"></span>
+          <span class="material-icons mdc-button__icon" aria-hidden="true">source</span>
+          <span class="mdc-button__label">Review Sources</span>
+        </a>
+      </div>
+    </section>
+
+    {% include "app/partials/material_form_card.html" with form=form form_title="Snapshot Capture Options" form_subtitle="Capture uses active registered sources only." submit_label="Capture Snapshot" submit_icon="archive" %}
+  </div>
+{% endblock %}

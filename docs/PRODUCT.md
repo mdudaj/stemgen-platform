@@ -26,3 +26,10 @@ artifacts were produced and how experts judged their feasibility.
 
 The current directory is at baseline-harness stage: auth, shell, assets, and
 verification scaffolding. Domain workflows are pending review before restore.
+
+## Milestone 22.5 Evaluation Readiness
+
+The platform is both a media-generation platform and a research instrument. Evaluation-readiness work must connect every feature to a research objective, evaluation activity, evidence artifact, or reproducibility requirement.
+
+Milestone 22.5 keeps implementation bounded to documentation, ADRs, schemas, requirements, and vertical slices. It does not restore the full curriculum or generation workflow yet.
+

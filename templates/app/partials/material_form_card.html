@@ -1,0 +1,29 @@
+{% load viewflow %}
+<div class="mdc-layout-grid vf-page__grid kisomo-form-grid">
+  <div class="mdc-layout-grid__inner vf-page__grid-inner">
+    <div class="mdc-layout-grid__cell mdc-layout-grid__cell--span-12 kisomo-form-card">
+      <div class="mdc-card vf-card kisomo-card">
+        <section class="vf-card__header kisomo-form-card__header">
+          <h2 class="vf-card__title">{{ form_title }}</h2>
+          {% if form_subtitle %}<p class="vf-card__breadcrumbs">{{ form_subtitle }}</p>{% endif %}
+        </section>
+        <vf-form>
+          <form class="vf-form" method="post" novalidate{% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
+            {% csrf_token %}
+            <section class="vf-card__form">
+              {% if form.non_field_errors %}<div class="kisomo-form__errors">{{ form.non_field_errors }}</div>{% endif %}
+              {% render form form.layout %}
+            </section>
+            <section class="mdc-card__actions vf-card__actions">
+              <button class="mdc-button mdc-card__action mdc-card__action--button mdc-button--raised kisomo-button" type="submit">
+                <span class="mdc-button__ripple"></span>
+                <span class="material-icons mdc-button__icon" aria-hidden="true">{{ submit_icon|default:"save" }}</span>
+                <span class="mdc-button__label">{{ submit_label }}</span>
+              </button>
+            </section>
+          </form>
+        </vf-form>
+      </div>
+    </div>
+  </div>
+</div>

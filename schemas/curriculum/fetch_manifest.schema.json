@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://stemgen-platform.local/schemas/curriculum/fetch_manifest.schema.json",
+  "title": "Curriculum Fetch Manifest",
+  "description": "Records attempted or completed source fetches and checksum evidence for curriculum snapshots.",
+  "type": "object",
+  "required": ["fetch_run_id", "snapshot_id", "created_at", "sources"],
+  "properties": {
+    "fetch_run_id": { "type": "string", "minLength": 1 },
+    "snapshot_id": { "type": "string", "format": "uuid" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_id", "official_url", "local_path", "status", "sha256"],
+        "properties": {
+          "source_id": { "type": "string", "format": "uuid" },
+          "official_url": { "type": "string", "format": "uri" },
+          "local_path": { "type": "string", "minLength": 1 },
+          "status": { "type": "string", "enum": ["planned", "fetched", "skipped", "failed"] },
+          "sha256": { "type": ["string", "null"], "pattern": "^[a-fA-F0-9]{64}$" },
+          "failure_reason": { "type": ["string", "null"] }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

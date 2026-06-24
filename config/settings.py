@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     "viewflow",
     "viewflow.workflow",
+    "apps.curriculum.apps.CurriculumConfig",
     "apps.users.apps.UsersConfig",
 ]
 
@@ -184,6 +185,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+CURRICULUM_ARTIFACT_ROOT = BASE_DIR / "artifacts" / "curriculum-snapshots"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
