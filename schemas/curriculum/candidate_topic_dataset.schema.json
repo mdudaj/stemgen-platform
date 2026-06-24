@@ -2,13 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://stemgen-platform.local/schemas/curriculum/candidate_topic_dataset.schema.json",
   "title": "Candidate Topic Dataset",
-  "description": "Rule-screened candidate topics derived from deterministic curriculum items.",
+  "description": "Candidate topics derived from deterministic curriculum items before or after rule-based animation-suitability screening.",
   "type": "object",
   "required": ["dataset_id", "source_snapshot_id", "created_at", "topics"],
   "properties": {
     "dataset_id": { "type": "string", "minLength": 1 },
     "source_snapshot_id": { "type": "string", "format": "uuid" },
     "created_at": { "type": "string", "format": "date-time" },
+    "screening_status": { "type": "string", "enum": ["not_screened", "rule_ready", "screened"], "default": "not_screened" },
     "topics": {
       "type": "array",
       "items": {

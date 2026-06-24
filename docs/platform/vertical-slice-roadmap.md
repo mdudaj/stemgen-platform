@@ -17,15 +17,15 @@ Out of scope: full extraction.
 
 ## Slice 2: Deterministic Curriculum Extraction and Candidate Topic Dataset
 
-Goal: extract normalized curriculum items and generate candidate topics.
+Goal: extract normalized Science and Mathematics curriculum items and generate rule-ready candidate topics.
 Research objective supported: topic identification.
 Workflow definition: curriculum intake.
 Evidence produced: extraction manifest, raw text, normalized items, candidate topic dataset.
 Models/entities required: CurriculumItem, CandidateTopic.
-Acceptance criteria: candidates link to source items and page/section/table references.
-Verification command: future `python3 scripts/validate_candidate_topics.py`.
-Risks: PDF extraction quality.
-Out of scope: LLM enrichment.
+Acceptance criteria: candidates link to deterministic source items with source/page/section/table references; animation-suitability fields remain pending for Slice 3.
+Verification command: `python manage.py curriculum_extract create --snapshot-id <snapshot_uuid> --validate --json` and `python3 scripts/validate_json.py`.
+Risks: PDF extraction quality; the first producer uses manually curated deterministic seed items until a full PDF extractor is justified.
+Out of scope: Geography candidate generation, LLM enrichment, rule-based screening, human acceptance.
 
 ## Slice 3: Rule-Based Topic Screening
 

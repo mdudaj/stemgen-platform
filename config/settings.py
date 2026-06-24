@@ -186,6 +186,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 CURRICULUM_ARTIFACT_ROOT = BASE_DIR / "artifacts" / "curriculum-snapshots"
+CURRICULUM_EXTRACTION_ROOT = BASE_DIR / "artifacts" / "curriculum-extractions"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 

@@ -1,0 +1,16 @@
+{
+  "created_at": "2026-06-24T00:00:00Z",
+  "dataset_id": "candidate-topics-example",
+  "screening_status": "not_screened",
+  "source_snapshot_id": "11111111-1111-4111-8111-111111111111",
+  "topics": [
+    {
+      "deprioritization_reasons": [],
+      "review_status": "pending",
+      "screening_signals": [],
+      "source_item_ids": ["science-std-iii-living-non-living"],
+      "topic": "Living and non-living things",
+      "topic_id": "topic-science-std-iii-living-non-living"
+    }
+  ]
+}

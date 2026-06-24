@@ -3,7 +3,7 @@
 ## Current State
 
 **Last Updated:** 2026-06-24
-**Active Feature:** feat-002 - Deterministic Curriculum Extraction And Candidate Topic Dataset
+**Active Feature:** feat-003 - Rule-Based Topic Screening
 
 ## Done
 
@@ -49,14 +49,20 @@
 - [x] Squash-merged Milestone 22.5 delivery through PR #1 and verified with
       `./init.sh`, `python3 scripts/validate_json.py`, and
       `.venv/bin/python manage.py test apps.curriculum apps.users config`.
+- [x] Added Slice 2 deterministic Science and Mathematics curriculum extraction
+      from captured source snapshots.
+- [x] Added `curriculum_extract create` to write `curriculum_items.json` and
+      `candidate_topics.json` with source/page/section provenance and pending
+      animation-suitability fields.
+- [x] Added schema examples and validation coverage for curriculum item
+      datasets and candidate topic datasets.
 
 ## In Progress
 
-- [ ] Prepare Slice 2: deterministic curriculum extraction and candidate topic
-      dataset from captured TIE source snapshots.
+- [ ] Prepare Slice 3: rule-based topic screening for candidate topics.
 
 ## Next Review
 
-- [ ] Define the bounded extraction contract: input snapshot manifests, raw text
-      handling, normalized curriculum item fields, page/section provenance, and
-      candidate topic dataset validation.
+- [ ] Define deterministic animation-suitability signals, deprioritization
+      reasons, and human-review handoff criteria without accepting topics
+      automatically.

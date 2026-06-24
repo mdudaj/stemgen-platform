@@ -1,0 +1,42 @@
+{
+  "created_at": "2026-06-24T00:00:00Z",
+  "dataset_id": "curriculum-items-example",
+  "extractor_version": "manual-seed-0.1.0",
+  "items": [
+    {
+      "animation_suitability": {
+        "candidate": null,
+        "rationale": "",
+        "review_status": "pending",
+        "screening_method": "not_screened"
+      },
+      "competency": "Make simple scientific observations",
+      "content_reference": {
+        "page": 10,
+        "section": "Standard III Table 2",
+        "table": "Table 2"
+      },
+      "extraction_warnings": [],
+      "item_id": "science-std-iii-living-non-living",
+      "language": "en",
+      "learning_objective": "",
+      "provenance": {
+        "checksum": "f83ea3623f244c0505b6df390a797db9b014d0449ea99172d5622d1ab95f6157",
+        "extractor_version": "manual-seed-0.1.0",
+        "manual_reviewed_by": null,
+        "retrieved_at": "2026-06-24T00:00:00Z",
+        "source_snapshot_id": "11111111-1111-4111-8111-111111111111"
+      },
+      "publisher": "Tanzania Institute of Education",
+      "raw_text_excerpt": "Identify living and non-living things.",
+      "source_id": "056f10be-1eae-5562-9113-6ab73436fdcf",
+      "source_title": "Science Syllabus Standard III-VI",
+      "source_url": "https://www.tie.go.tz/uploads/documents/en-1727175605-Science%20Syllabus%20For%20Primary%20Education%20Standard%20III%20-%20VI.pdf",
+      "standard": "III",
+      "subject": "Science",
+      "subtopic": "",
+      "topic": "Living and non-living things"
+    }
+  ],
+  "source_snapshot_id": "11111111-1111-4111-8111-111111111111"
+}

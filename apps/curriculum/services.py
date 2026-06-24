@@ -28,6 +28,8 @@ Fetcher = Callable[[CurriculumSource], FetchResult]
 
 DEFAULT_TIMEOUT_SECONDS = 20
 SOURCE_REGISTRY_FIXTURE = Path("fixtures/curriculum/tie_sources.json")
+DETERMINISTIC_CURRICULUM_ITEMS_FIXTURE = Path("fixtures/curriculum/deterministic_curriculum_items.json")
+CURRICULUM_EXTRACTOR_VERSION = "manual-seed-0.1.0"
 
 
 @dataclass(frozen=True)
@@ -38,9 +40,27 @@ class SnapshotPlan:
     description: str = ""
 
 
+@dataclass(frozen=True)
+class CurriculumExtractionResult:
+    dataset_id: str
+    source_snapshot_id: uuid.UUID
+    artifact_root: Path
+    item_count: int
+    candidate_topic_count: int
+    validation_errors: list[str]
+    curriculum_items_path: Path
+    candidate_topics_path: Path
+
+
 def load_source_registry(path: Path | None = None) -> list[dict]:
     registry_path = path or settings.BASE_DIR / SOURCE_REGISTRY_FIXTURE
     with registry_path.open("r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def load_deterministic_curriculum_items(path: Path | None = None) -> list[dict]:
+    item_path = path or settings.BASE_DIR / DETERMINISTIC_CURRICULUM_ITEMS_FIXTURE
+    with item_path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
 
 
@@ -306,6 +326,152 @@ def validate_snapshot_artifacts(root: Path) -> list[str]:
     return errors
 
 
+@transaction.atomic
+def create_curriculum_extraction(
+    *,
+    source_snapshot_id: str | uuid.UUID,
+    item_fixture_path: Path | None = None,
+    validate: bool = False,
+) -> CurriculumExtractionResult:
+    snapshot_uuid = normalize_uuid(source_snapshot_id)
+    snapshot = CurriculumSnapshot.objects.get(snapshot_id=snapshot_uuid)
+    output_root = curriculum_extraction_root(snapshot_uuid)
+    if output_root.exists():
+        raise ValidationError(f"Curriculum extraction artifact directory already exists: {output_root}")
+    output_root.mkdir(parents=True, exist_ok=False)
+
+    source_by_id = {str(source.source_id): source for source in CurriculumSource.objects.all()}
+    checksum_by_source_id = {
+        str(entry.source.source_id): entry.sha256
+        for entry in snapshot.captured_sources.select_related("source")
+        if entry.sha256
+    }
+    retrieved_at = artifact_datetime(snapshot.completed_at or snapshot.created_at)
+    items = [
+        curriculum_item_payload(
+            raw_item,
+            source_by_id=source_by_id,
+            checksum_by_source_id=checksum_by_source_id,
+            source_snapshot_id=snapshot_uuid,
+            retrieved_at=retrieved_at,
+        )
+        for raw_item in load_deterministic_curriculum_items(item_fixture_path)
+        if raw_item["source_id"] in source_by_id and source_by_id[raw_item["source_id"]].subject in {"Science", "Mathematics"}
+    ]
+    item_dataset = {
+        "dataset_id": f"curriculum-items-{snapshot_uuid}",
+        "source_snapshot_id": str(snapshot_uuid),
+        "created_at": iso_now(),
+        "extractor_version": CURRICULUM_EXTRACTOR_VERSION,
+        "items": items,
+    }
+    candidate_dataset = candidate_topic_dataset_payload(snapshot_uuid, items)
+
+    curriculum_items_path = output_root / "curriculum_items.json"
+    candidate_topics_path = output_root / "candidate_topics.json"
+    write_json(curriculum_items_path, item_dataset)
+    write_json(candidate_topics_path, candidate_dataset)
+
+    validation_errors = validate_curriculum_extraction_artifacts(output_root) if validate else []
+    return CurriculumExtractionResult(
+        dataset_id=item_dataset["dataset_id"],
+        source_snapshot_id=snapshot_uuid,
+        artifact_root=output_root,
+        item_count=len(items),
+        candidate_topic_count=len(candidate_dataset["topics"]),
+        validation_errors=validation_errors,
+        curriculum_items_path=curriculum_items_path,
+        candidate_topics_path=candidate_topics_path,
+    )
+
+
+def curriculum_item_payload(
+    raw_item: dict,
+    *,
+    source_by_id: dict[str, CurriculumSource],
+    checksum_by_source_id: dict[str, str],
+    source_snapshot_id: uuid.UUID,
+    retrieved_at: str,
+) -> dict:
+    source = source_by_id[raw_item["source_id"]]
+    checksum = checksum_by_source_id.get(str(source.source_id))
+    extraction_warnings = list(raw_item.get("extraction_warnings", []))
+    if not checksum:
+        checksum = "0" * 64
+        extraction_warnings.append("Source checksum was unavailable in the referenced snapshot.")
+    return {
+        "item_id": raw_item["item_id"],
+        "source_id": str(source.source_id),
+        "source_url": source.official_url,
+        "source_title": source.title,
+        "publisher": source.publisher,
+        "subject": source.subject,
+        "standard": raw_item["standard"],
+        "topic": raw_item["topic"],
+        "subtopic": raw_item.get("subtopic", ""),
+        "learning_objective": raw_item.get("learning_objective", ""),
+        "competency": raw_item.get("competency", ""),
+        "content_reference": raw_item["content_reference"],
+        "raw_text_excerpt": raw_item.get("raw_text_excerpt", ""),
+        "extraction_warnings": extraction_warnings,
+        "language": raw_item.get("language", "en"),
+        "animation_suitability": {
+            "candidate": None,
+            "rationale": "",
+            "screening_method": "not_screened",
+            "review_status": "pending",
+        },
+        "provenance": {
+            "source_snapshot_id": str(source_snapshot_id),
+            "retrieved_at": retrieved_at,
+            "checksum": checksum,
+            "extractor_version": CURRICULUM_EXTRACTOR_VERSION,
+            "manual_reviewed_by": None,
+        },
+    }
+
+
+def candidate_topic_dataset_payload(source_snapshot_id: uuid.UUID, items: list[dict]) -> dict:
+    return {
+        "dataset_id": f"candidate-topics-{source_snapshot_id}",
+        "source_snapshot_id": str(source_snapshot_id),
+        "created_at": iso_now(),
+        "screening_status": "not_screened",
+        "topics": [
+            {
+                "topic_id": f"topic-{item['item_id']}",
+                "source_item_ids": [item["item_id"]],
+                "topic": item["topic"],
+                "screening_signals": [],
+                "deprioritization_reasons": [],
+                "review_status": "pending",
+            }
+            for item in items
+        ],
+    }
+
+
+def validate_curriculum_extraction_artifacts(root: Path) -> list[str]:
+    checks = {
+        root / "curriculum_items.json": settings.BASE_DIR / "schemas/curriculum/curriculum_item_dataset.schema.json",
+        root / "candidate_topics.json": settings.BASE_DIR / "schemas/curriculum/candidate_topic_dataset.schema.json",
+    }
+    errors: list[str] = []
+    for artifact_path, schema_path in checks.items():
+        try:
+            schema = read_json(schema_path)
+            Draft202012Validator.check_schema(schema)
+            instance = read_json(artifact_path)
+            Draft202012Validator(schema).validate(instance)
+            if artifact_path.name == "curriculum_items.json":
+                item_schema = read_json(settings.BASE_DIR / "schemas/curriculum/curriculum_item.schema.json")
+                for item in instance["items"]:
+                    Draft202012Validator(item_schema).validate(item)
+        except (OSError, json.JSONDecodeError, JsonSchemaValidationError) as exc:
+            errors.append(f"{artifact_path.name}: {exc}")
+    return errors
+
+
 def read_json(path: Path):
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
@@ -371,6 +537,10 @@ def artifact_root(snapshot_id: str | uuid.UUID) -> Path:
     return artifact_root_base() / safe_snapshot_id(snapshot_id)
 
 
+def curriculum_extraction_root(source_snapshot_id: str | uuid.UUID) -> Path:
+    return Path(getattr(settings, "CURRICULUM_EXTRACTION_ROOT", settings.BASE_DIR / "artifacts/curriculum-extractions")) / safe_snapshot_id(source_snapshot_id)
+
+
 def artifact_root_base() -> Path:
     return Path(getattr(settings, "CURRICULUM_ARTIFACT_ROOT", settings.BASE_DIR / "artifacts/curriculum-snapshots"))
 
@@ -396,3 +566,7 @@ def relative_path(path: Path) -> str:
 
 def iso_now() -> str:
     return datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def artifact_datetime(value) -> str:
+    return value.astimezone(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")

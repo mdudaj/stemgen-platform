@@ -1,0 +1,92 @@
+[
+  {
+    "competency": "Make simple scientific observations",
+    "content_reference": {
+      "page": 10,
+      "section": "Standard III Table 2",
+      "table": "Table 2"
+    },
+    "item_id": "science-std-iii-living-non-living",
+    "learning_objective": "",
+    "raw_text_excerpt": "Identify living and non-living things.",
+    "source_id": "056f10be-1eae-5562-9113-6ab73436fdcf",
+    "standard": "III",
+    "subtopic": "",
+    "topic": "Living and non-living things"
+  },
+  {
+    "competency": "Conduct elementary scientific experiments",
+    "content_reference": {
+      "page": 12,
+      "section": "Standard III Table 2",
+      "table": "Table 2"
+    },
+    "item_id": "science-std-iii-elementary-experiments",
+    "learning_objective": "",
+    "raw_text_excerpt": "Conduct elementary experiments on various living and non-living things.",
+    "source_id": "056f10be-1eae-5562-9113-6ab73436fdcf",
+    "standard": "III",
+    "subtopic": "",
+    "topic": "Elementary experiments on living and non-living things"
+  },
+  {
+    "competency": "Demonstrate an understanding of the concept of numbers",
+    "content_reference": {
+      "page": 9,
+      "section": "Standard III Table 2",
+      "table": "Table 2"
+    },
+    "item_id": "mathematics-std-iii-whole-number-sequences",
+    "learning_objective": "",
+    "raw_text_excerpt": "Identify sequences in whole numbers.",
+    "source_id": "af3128e1-3ac3-5973-8146-c5d87de060b5",
+    "standard": "III",
+    "subtopic": "",
+    "topic": "Sequences in whole numbers"
+  },
+  {
+    "competency": "Demonstrate an understanding of elementary geometry",
+    "content_reference": {
+      "page": 11,
+      "section": "Standard III Table 2",
+      "table": "Table 2"
+    },
+    "item_id": "mathematics-std-iii-points-lines-rays",
+    "learning_objective": "",
+    "raw_text_excerpt": "Explain a point, line, line segment, and a ray.",
+    "source_id": "af3128e1-3ac3-5973-8146-c5d87de060b5",
+    "standard": "III",
+    "subtopic": "",
+    "topic": "Points, lines, line segments, and rays"
+  },
+  {
+    "competency": "Demonstrate an understanding of elementary mathematical skills",
+    "content_reference": {
+      "page": 12,
+      "section": "Standard III Table 2",
+      "table": "Table 2"
+    },
+    "item_id": "mathematics-std-iii-fraction-concept",
+    "learning_objective": "",
+    "raw_text_excerpt": "Use division of objects to explain the concept of fraction.",
+    "source_id": "af3128e1-3ac3-5973-8146-c5d87de060b5",
+    "standard": "III",
+    "subtopic": "",
+    "topic": "Concept of fractions"
+  },
+  {
+    "competency": "Demonstrate an understanding of the mathematics of time",
+    "content_reference": {
+      "page": 13,
+      "section": "Standard III Table 2",
+      "table": "Table 2"
+    },
+    "item_id": "mathematics-std-iii-time-formats",
+    "learning_objective": "",
+    "raw_text_excerpt": "Describe time in 12-hour format and 24-hour format.",
+    "source_id": "af3128e1-3ac3-5973-8146-c5d87de060b5",
+    "standard": "III",
+    "subtopic": "",
+    "topic": "Time in 12-hour and 24-hour formats"
+  }
+]

@@ -4,8 +4,9 @@
   "title": "Curriculum Item",
   "description": "A normalized deterministic curriculum item extracted from official curriculum sources.",
   "type": "object",
-  "required": ["source_id", "source_url", "source_title", "publisher", "subject", "standard", "topic", "content_reference", "language", "animation_suitability", "provenance"],
+  "required": ["item_id", "source_id", "source_url", "source_title", "publisher", "subject", "standard", "topic", "content_reference", "language", "animation_suitability", "provenance"],
   "properties": {
+    "item_id": { "type": "string", "minLength": 1 },
     "source_id": { "type": "string", "format": "uuid" },
     "source_url": { "type": "string", "format": "uri" },
     "source_title": { "type": "string", "minLength": 1 },
@@ -26,12 +27,14 @@
       },
       "additionalProperties": false
     },
+    "raw_text_excerpt": { "type": "string" },
+    "extraction_warnings": { "type": "array", "items": { "type": "string" } },
     "language": { "type": "string", "minLength": 1 },
     "animation_suitability": {
       "type": "object",
       "required": ["candidate", "rationale", "screening_method", "review_status"],
       "properties": {
-        "candidate": { "type": "boolean" },
+        "candidate": { "type": ["boolean", "null"] },
         "rationale": { "type": "string" },
         "screening_method": { "type": "string" },
         "review_status": { "type": "string", "enum": ["pending", "screened", "reviewed", "accepted", "rejected", "needs_revision"] }
@@ -40,8 +43,9 @@
     },
     "provenance": {
       "type": "object",
-      "required": ["retrieved_at", "checksum", "extractor_version", "manual_reviewed_by"],
+      "required": ["source_snapshot_id", "retrieved_at", "checksum", "extractor_version", "manual_reviewed_by"],
       "properties": {
+        "source_snapshot_id": { "type": "string", "format": "uuid" },
         "retrieved_at": { "type": "string", "format": "date-time" },
         "checksum": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
         "extractor_version": { "type": "string", "minLength": 1 },
