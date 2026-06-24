@@ -17,6 +17,7 @@ from apps.curriculum.models import CurriculumSnapshot
 from apps.curriculum.models import CurriculumSnapshotSource
 from apps.curriculum.models import CurriculumSource
 from apps.curriculum.services import create_snapshot
+from apps.curriculum.services import create_curriculum_extraction
 from apps.curriculum.services import generate_curriculum_source_id
 from apps.curriculum.services import generate_unique_curriculum_source_id
 from apps.curriculum.services import generate_unique_snapshot_id
@@ -184,6 +185,56 @@ class CurriculumSnapshotServiceTests(TestCase):
                 self.assertIn("network unavailable", entry.error_message)
                 manifest = json.loads((Path(temp_dir) / str(snapshot_id) / "fetch_manifest.json").read_text(encoding="utf-8"))
                 self.assertEqual(manifest["sources"][0]["status"], "failed")
+
+    def test_curriculum_extraction_writes_items_and_unscreened_candidates(self):
+        with tempfile.TemporaryDirectory() as snapshot_dir:
+            with tempfile.TemporaryDirectory() as extraction_dir:
+                with override_settings(CURRICULUM_ARTIFACT_ROOT=Path(snapshot_dir), CURRICULUM_EXTRACTION_ROOT=Path(extraction_dir)):
+                    snapshot = create_snapshot(
+                        snapshot_id=uuid.UUID("11111111-1111-4111-8111-111111111111"),
+                        validate=True,
+                        fetcher=lambda _source: (b"example pdf bytes", "application/pdf"),
+                    )
+
+                    result = create_curriculum_extraction(source_snapshot_id=snapshot.snapshot_id, validate=True)
+
+                    self.assertEqual(result.validation_errors, [])
+                    self.assertEqual(result.item_count, 6)
+                    self.assertEqual(result.candidate_topic_count, 6)
+                    items = json.loads(result.curriculum_items_path.read_text(encoding="utf-8"))
+                    topics = json.loads(result.candidate_topics_path.read_text(encoding="utf-8"))
+                    self.assertEqual(items["source_snapshot_id"], str(snapshot.snapshot_id))
+                    self.assertEqual({item["subject"] for item in items["items"]}, {"Science", "Mathematics"})
+                    self.assertEqual(items["items"][0]["animation_suitability"]["candidate"], None)
+                    self.assertEqual(items["items"][0]["animation_suitability"]["screening_method"], "not_screened")
+                    self.assertEqual(topics["screening_status"], "not_screened")
+                    self.assertEqual(topics["topics"][0]["screening_signals"], [])
+
+    def test_curriculum_extract_command_outputs_json(self):
+        with tempfile.TemporaryDirectory() as snapshot_dir:
+            with tempfile.TemporaryDirectory() as extraction_dir:
+                with override_settings(CURRICULUM_ARTIFACT_ROOT=Path(snapshot_dir), CURRICULUM_EXTRACTION_ROOT=Path(extraction_dir)):
+                    snapshot = create_snapshot(
+                        snapshot_id=uuid.UUID("22222222-2222-4222-8222-222222222222"),
+                        no_download=True,
+                        validate=True,
+                    )
+                    output = StringIO()
+
+                    call_command(
+                        "curriculum_extract",
+                        "create",
+                        "--snapshot-id",
+                        str(snapshot.snapshot_id),
+                        "--validate",
+                        "--json",
+                        stdout=output,
+                    )
+
+                    payload = json.loads(output.getvalue())
+                    self.assertEqual(payload["item_count"], 6)
+                    self.assertEqual(payload["candidate_topic_count"], 6)
+                    self.assertEqual(payload["validation_errors"], [])
 
     def load_schema(self, name):
         schema_path = Path(__file__).resolve().parents[2] / "schemas/curriculum" / name

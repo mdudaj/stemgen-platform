@@ -21,8 +21,16 @@
       "name": "Deterministic Curriculum Extraction And Candidate Topic Dataset",
       "description": "Extract normalized curriculum items from captured TIE source snapshots and produce a candidate topic dataset with source, page, section, and provenance references.",
       "dependencies": ["feat-001"],
+      "status": "done",
+      "evidence": "Deterministic Science and Mathematics seed extraction is implemented through the curriculum_extract command and create_curriculum_extraction service. It writes curriculum_items.json and candidate_topics.json linked to a source snapshot, source IDs, page/section/table references, and pending animation-suitability fields. Verified with python3 scripts/validate_json.py and .venv/bin/python manage.py test apps.curriculum."
+    },
+    {
+      "id": "feat-003",
+      "name": "Rule-Based Topic Screening",
+      "description": "Classify candidate topics using deterministic animation-suitability signals while preserving human review as the acceptance gate.",
+      "dependencies": ["feat-002"],
       "status": "ready-next",
-      "evidence": "Next implementation target after Milestone 22.5 delivery. Roadmap Slice 2 defines normalized curriculum items and candidate topics as the next data-producing research evidence slice."
+      "evidence": "Next implementation target after Slice 2. Candidate topics are generated with empty screening_signals and pending review_status, ready for deterministic rule-based screening."
     }
   ]
 }
