@@ -10,11 +10,19 @@
     },
     {
       "id": "feat-001",
-      "name": "Reproducible Topic Brief Run",
-      "description": "Restore the reviewed curriculum/topic-brief run workflow with preserved manifests and outputs.",
+      "name": "Reproducible Curriculum Intake And Source Snapshot",
+      "description": "Register official TIE curriculum sources, capture reproducible source snapshots, validate evidence manifests, and expose staff-only curriculum intake review surfaces.",
       "dependencies": ["feat-000"],
-      "status": "blocked-review",
-      "evidence": "Held for user review per rebuild plan."
+      "status": "done",
+      "evidence": "Milestone 22.5 merged in PR #1. Evidence includes schema-backed curriculum source and snapshot models, UUID evidence identifiers, source registry fixtures, curriculum snapshot service and command, staff-only source management and snapshot capture pages, dashboard/navigation integration, schema/example validation, and focused Django coverage. Verified with ./init.sh, python3 scripts/validate_json.py, and .venv/bin/python manage.py test apps.curriculum apps.users config."
+    },
+    {
+      "id": "feat-002",
+      "name": "Deterministic Curriculum Extraction And Candidate Topic Dataset",
+      "description": "Extract normalized curriculum items from captured TIE source snapshots and produce a candidate topic dataset with source, page, section, and provenance references.",
+      "dependencies": ["feat-001"],
+      "status": "ready-next",
+      "evidence": "Next implementation target after Milestone 22.5 delivery. Roadmap Slice 2 defines normalized curriculum items and candidate topics as the next data-producing research evidence slice."
     }
   ]
 }

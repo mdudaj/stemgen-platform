@@ -2,8 +2,8 @@
 
 ## Current State
 
-**Last Updated:** 2026-06-09
-**Active Feature:** feat-001 - Reproducible Topic Brief Run Review Gate
+**Last Updated:** 2026-06-24
+**Active Feature:** feat-002 - Deterministic Curriculum Extraction And Candidate Topic Dataset
 
 ## Done
 
@@ -35,13 +35,28 @@
 - [x] Replaced the authenticated Viewflow default page shell with a Kisomo-owned
       shell: side navigation, top bar, Dashboard, and Configuration / Users &
       Roles.
+- [x] Delivered Milestone 22.5 evaluation-readiness documentation, ADRs,
+      evidence schemas, and vertical-slice roadmap.
+- [x] Added schema-backed curriculum source registry and reproducible snapshot
+      evidence models with UUID identifiers.
+- [x] Added staff-only curriculum intake surfaces for source management,
+      default TIE source seeding, snapshot capture, and read-only snapshot
+      review.
+- [x] Added source registry fixtures, schema examples, snapshot command/service
+      coverage, and dashboard evidence/status integration.
+- [x] Hardened PostgreSQL UUID evidence migration by dropping non-constraint
+      text-pattern indexes before UUID column conversion.
+- [x] Squash-merged Milestone 22.5 delivery through PR #1 and verified with
+      `./init.sh`, `python3 scripts/validate_json.py`, and
+      `.venv/bin/python manage.py test apps.curriculum apps.users config`.
 
 ## In Progress
 
-- [ ] Review whether to restore the old dissertation curriculum/topic-brief
-      workflows as-is or refactor them into the new harness structure first.
+- [ ] Prepare Slice 2: deterministic curriculum extraction and candidate topic
+      dataset from captured TIE source snapshots.
 
 ## Next Review
 
-- [ ] Decide the restoration posture for feat-001 before copying curriculum,
-      experiments, artifacts, or async workflow code.
+- [ ] Define the bounded extraction contract: input snapshot manifests, raw text
+      handling, normalized curriculum item fields, page/section provenance, and
+      candidate topic dataset validation.
