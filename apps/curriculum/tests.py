@@ -414,22 +414,24 @@ class CurriculumIntakeTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "dissertation/ui/components.css")
-        self.assertContains(response, "?v=20260621-1")
+        self.assertContains(response, "?v=20260622-1")
         self.assertContains(response, "kisomo-page-stack")
         self.assertContains(response, "kisomo-card-grid")
-        self.assertContains(response, "kisomo-action-card__body", count=3)
-        self.assertContains(response, "kisomo-action-card__actions", count=3)
-        self.assertContains(response, "mdc-button__icon", count=3)
+        self.assertContains(response, "kisomo-action-card__body", count=4)
+        self.assertContains(response, "kisomo-action-card__actions", count=4)
+        self.assertContains(response, "mdc-button__icon", count=4)
         self.assertContains(response, "Manage Sources")
         self.assertContains(response, reverse("curriculum-source-list"))
         self.assertContains(response, "Capture Snapshot")
         self.assertContains(response, reverse("curriculum-snapshot-capture"))
         self.assertContains(response, "Review Snapshots")
         self.assertContains(response, reverse("curriculum-snapshot-list"))
+        self.assertContains(response, "Review Extractions")
+        self.assertContains(response, reverse("curriculum-extraction-list"))
         self.assertContains(response, "mdc-card kisomo-tab-surface")
         self.assertContains(response, "mdc-tab-bar kisomo-material-tabs")
         self.assertContains(response, "mdc-tab-scroller")
-        self.assertContains(response, "mdc-tab ", count=2)
+        self.assertContains(response, "mdc-tab ", count=3)
         self.assertContains(response, "mdc-tab--active")
         self.assertContains(response, "mdc-tab-indicator--active")
         self.assertContains(response, "mdc-tab-indicator__content--underline")
@@ -441,6 +443,7 @@ class CurriculumIntakeTests(TestCase):
         self.assertContains(response, "Tier 1 Sources")
         self.assertContains(response, "?tab=sources")
         self.assertContains(response, "?tab=snapshots")
+        self.assertContains(response, "?tab=extractions")
         self.assertNotContains(response, 'name="official_url"')
         self.assertNotContains(response, 'name="no_download"')
 
@@ -466,10 +469,15 @@ class CurriculumIntakeTests(TestCase):
         list_response = client.get(reverse("curriculum-source-list"))
         create_response = client.get(reverse("curriculum-source-create"))
         capture_response = client.get(reverse("curriculum-snapshot-capture"))
+        extraction_response = client.get(reverse("curriculum-extraction-list"))
+        snapshot = CurriculumSnapshot.objects.create(description="Blocked extraction")
+        extraction_create_response = client.post(reverse("curriculum-extraction-create", kwargs={"snapshot_id": snapshot.snapshot_id}))
 
         self.assertEqual(list_response.status_code, 403)
         self.assertEqual(create_response.status_code, 403)
         self.assertEqual(capture_response.status_code, 403)
+        self.assertEqual(extraction_response.status_code, 403)
+        self.assertEqual(extraction_create_response.status_code, 403)
 
     def test_staff_menu_exposes_single_curriculum_entry(self):
         client = Client()
@@ -494,6 +502,7 @@ class CurriculumIntakeTests(TestCase):
         self.assertContains(response, "kisomo-page-stack")
         self.assertContains(response, "kisomo-object-header__actions")
         self.assertContains(response, "kisomo-back-action")
+        self.assertContains(response, "Back to Curriculum")
         self.assertContains(response, "Back to Curriculum")
         self.assertContains(response, reverse("curriculum-home"))
         self.assertContains(response, reverse("curriculum-source-create"))
@@ -618,17 +627,78 @@ class CurriculumIntakeTests(TestCase):
         self.assertContains(response, "kisomo-page-stack")
         self.assertContains(response, "kisomo-object-header__actions")
         self.assertContains(response, "kisomo-back-action")
+
+    def test_extraction_list_requires_authentication(self):
+        response = Client().get(reverse("curriculum-extraction-list"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login/", response["Location"])
+
+    def test_staff_can_open_extraction_list(self):
+        snapshot = CurriculumSnapshot.objects.create(description="Extraction-ready snapshot")
+        client = Client()
+        client.force_login(self.staff)
+
+        response = client.get(reverse("curriculum-extraction-list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Extraction Review")
+        self.assertContains(response, "Snapshot Extraction Worklist")
+        self.assertContains(response, "Extraction-ready snapshot")
+        self.assertContains(response, "Run Extraction")
+        self.assertContains(response, reverse("curriculum-extraction-create", kwargs={"snapshot_id": snapshot.snapshot_id}))
+        self.assertContains(response, "kisomo-page-stack")
+        self.assertContains(response, "kisomo-object-header__actions")
         self.assertContains(response, "Back to Curriculum")
-        self.assertContains(response, "Review Sources")
-        self.assertContains(response, "mdc-layout-grid__cell--span-12")
-        self.assertContains(response, "mdc-card vf-card kisomo-card")
-        self.assertContains(response, "vf-card__form")
-        self.assertContains(response, "vf-field-checkbox")
-        self.assertContains(response, "vf-form-row")
-        self.assertContains(response, "mdc-card__actions vf-card__actions")
-        self.assertContains(response, "kisomo-form-card")
-        self.assertNotContains(response, "Active Sources")
-        self.assertNotContains(response, 'name="snapshot_id"')
+        self.assertContains(response, "Extraction review does not screen, accept, or promote candidate topics.")
+
+    def test_staff_can_launch_extraction_from_web_and_review_artifacts(self):
+        with tempfile.TemporaryDirectory() as snapshot_dir:
+            with tempfile.TemporaryDirectory() as extraction_dir:
+                with override_settings(CURRICULUM_ARTIFACT_ROOT=Path(snapshot_dir), CURRICULUM_EXTRACTION_ROOT=Path(extraction_dir)):
+                    snapshot = create_snapshot(
+                        snapshot_id=uuid.UUID("33333333-3333-4333-8333-333333333333"),
+                        validate=True,
+                        fetcher=lambda _source: (b"example pdf bytes", "application/pdf"),
+                    )
+                    client = Client()
+                    client.force_login(self.staff)
+
+                    response = client.post(reverse("curriculum-extraction-create", kwargs={"snapshot_id": snapshot.snapshot_id}))
+
+                    self.assertEqual(response.status_code, 302)
+                    self.assertEqual(response["Location"], reverse("curriculum-extraction-detail", kwargs={"snapshot_id": snapshot.snapshot_id}))
+                    detail = client.get(response["Location"])
+                    self.assertEqual(detail.status_code, 200)
+                    self.assertContains(detail, "Extraction artifacts created for web review.")
+                    self.assertContains(detail, "Curriculum Items")
+                    self.assertContains(detail, "Candidate Topics")
+                    self.assertContains(detail, "Living and non-living things")
+                    self.assertContains(detail, "Not screened")
+                    self.assertContains(detail, "This page does not accept topics")
+                    self.assertContains(detail, "kisomo-metric-list")
+                    self.assertContains(detail, '<table class="kisomo-table">', count=2)
+
+    def test_extraction_web_launch_does_not_overwrite_existing_artifacts(self):
+        with tempfile.TemporaryDirectory() as snapshot_dir:
+            with tempfile.TemporaryDirectory() as extraction_dir:
+                with override_settings(CURRICULUM_ARTIFACT_ROOT=Path(snapshot_dir), CURRICULUM_EXTRACTION_ROOT=Path(extraction_dir)):
+                    snapshot = create_snapshot(
+                        snapshot_id=uuid.UUID("44444444-4444-4444-8444-444444444444"),
+                        validate=True,
+                        fetcher=lambda _source: (b"example pdf bytes", "application/pdf"),
+                    )
+                    create_curriculum_extraction(source_snapshot_id=snapshot.snapshot_id, validate=True)
+                    client = Client()
+                    client.force_login(self.staff)
+
+                    response = client.post(reverse("curriculum-extraction-create", kwargs={"snapshot_id": snapshot.snapshot_id}))
+
+                    self.assertEqual(response.status_code, 302)
+                    self.assertEqual(response["Location"], reverse("curriculum-extraction-detail", kwargs={"snapshot_id": snapshot.snapshot_id}))
+                    detail = client.get(response["Location"])
+                    self.assertContains(detail, "Extraction artifacts already exist for this snapshot.")
+                    self.assertContains(detail, "Generated")
 
     def test_snapshot_id_generation_returns_uuid(self):
         first = generate_unique_snapshot_id()

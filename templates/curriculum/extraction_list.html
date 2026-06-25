@@ -1,0 +1,96 @@
+{% extends "app/base_page.html" %}
+
+{% block title_page %}Curriculum Extractions{% endblock %}
+{% block shell_title %}Curriculum Extractions{% endblock %}
+
+{% block breadcrumbs %}
+  <a href="{% url 'dashboard' %}">Dashboard</a>
+  <span aria-hidden="true">/</span>
+  <a href="{% url 'curriculum-home' %}">Curriculum</a>
+  <span aria-hidden="true">/</span>
+  <span>Extractions</span>
+{% endblock %}
+
+{% block content %}
+  <div class="kisomo-page kisomo-page-stack">
+    <section class="kisomo-object-header">
+      <div>
+        <p class="kisomo-eyebrow">Deterministic curriculum evidence</p>
+        <h1>Extraction Review</h1>
+        <p>Launch deterministic extraction from captured snapshots and inspect generated curriculum item and candidate topic artifacts.</p>
+      </div>
+      <div class="kisomo-object-header__actions">
+        {% url 'curriculum-home' as back_url %}
+        {% include "app/partials/back_action.html" with href=back_url label="Back to Curriculum" %}
+      </div>
+    </section>
+
+    {% if messages %}
+      <section class="kisomo-content-stack" aria-label="Messages">
+        {% for message in messages %}
+          <p class="kisomo-state-chip">{{ message }}</p>
+        {% endfor %}
+      </section>
+    {% endif %}
+
+    <article class="kisomo-card kisomo-table-card">
+      <h2>Snapshot Extraction Worklist</h2>
+      <table class="kisomo-table">
+        <thead>
+          <tr>
+            <th>Snapshot</th>
+            <th>Status</th>
+            <th>Validation</th>
+            <th>Extraction</th>
+            <th>Items</th>
+            <th>Candidate Topics</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in snapshot_rows %}
+            <tr>
+              <td>
+                <strong>{{ row.snapshot.description|default:"Source snapshot" }}</strong><br>
+                <code>{{ row.snapshot.snapshot_id }}</code>
+              </td>
+              <td>{{ row.snapshot.status }}</td>
+              <td>{{ row.snapshot.validation_status }}</td>
+              <td>
+                {% if row.summary.exists %}
+                  <span class="kisomo-state-chip">Generated</span>
+                {% else %}
+                  <span class="kisomo-state-chip">Not generated</span>
+                {% endif %}
+              </td>
+              <td>{{ row.summary.item_count }}</td>
+              <td>{{ row.summary.candidate_topic_count }}</td>
+              <td>
+                {% if row.summary.exists %}
+                  <a class="kisomo-button" href="{% url 'curriculum-extraction-detail' row.snapshot.snapshot_id %}">
+                    <span class="material-icons" aria-hidden="true">visibility</span>
+                    <span>Review</span>
+                  </a>
+                {% else %}
+                  <form method="post" action="{% url 'curriculum-extraction-create' row.snapshot.snapshot_id %}">
+                    {% csrf_token %}
+                    <button class="kisomo-button" type="submit">
+                      <span class="material-icons" aria-hidden="true">play_arrow</span>
+                      <span>Run Extraction</span>
+                    </button>
+                  </form>
+                {% endif %}
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="7">No snapshots are available for extraction.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+
+    <p class="kisomo-empty-state">Extraction review does not screen, accept, or promote candidate topics. Screening remains a later deterministic step and acceptance requires a human topic decision.</p>
+  </div>
+{% endblock %}

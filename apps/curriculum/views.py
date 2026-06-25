@@ -6,21 +6,28 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.exceptions import ValidationError
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import DetailView
 from django.views.generic import ListView
 from django.views.generic import RedirectView
 from django.views.generic import TemplateView
+from django.views.generic import View
 
 from apps.curriculum.forms import CurriculumSourceForm
 from apps.curriculum.forms import SnapshotCaptureForm
 from apps.curriculum.models import CurriculumSnapshot
 from apps.curriculum.models import CurriculumSource
+from apps.curriculum.services import create_curriculum_extraction
 from apps.curriculum.services import create_snapshot
+from apps.curriculum.services import curriculum_extraction_root
 from apps.curriculum.services import generate_unique_snapshot_id
+from apps.curriculum.services import read_json
 from apps.curriculum.services import seed_curriculum_sources
 from apps.curriculum.services import source_registry_payload
+from apps.curriculum.services import validate_curriculum_extraction_artifacts
 
 
 class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -39,6 +46,7 @@ class CurriculumContextMixin:
             "tier1_source_count": sources.filter(source_tier=CurriculumSource.SourceTier.TIER_1).count(),
             "latest_snapshot": latest_snapshot,
             "latest_warning_count": len(latest_snapshot.warnings) if latest_snapshot else 0,
+            "extraction_count": curriculum_extraction_count(),
         }
 
 
@@ -49,7 +57,7 @@ class CurriculumHomeView(StaffRequiredMixin, CurriculumContextMixin, TemplateVie
         context = super().get_context_data(**kwargs)
         context.update(self.curriculum_context())
         active_tab = self.request.GET.get("tab", "sources")
-        context["active_tab"] = active_tab if active_tab in {"sources", "snapshots"} else "sources"
+        context["active_tab"] = active_tab if active_tab in {"sources", "snapshots", "extractions"} else "sources"
         context["curriculum_tabs"] = [
             {
                 "key": "sources",
@@ -62,6 +70,12 @@ class CurriculumHomeView(StaffRequiredMixin, CurriculumContextMixin, TemplateVie
                 "label": "Latest Snapshot",
                 "icon": "inventory_2",
                 "url": f"{reverse('curriculum-home')}?tab=snapshots",
+            },
+            {
+                "key": "extractions",
+                "label": "Extractions",
+                "icon": "fact_check",
+                "url": f"{reverse('curriculum-home')}?tab=extractions",
             },
         ]
         return context
@@ -200,3 +214,96 @@ class CurriculumSnapshotDetailView(StaffRequiredMixin, DetailView):
 
     def get_queryset(self):
         return super().get_queryset().prefetch_related("captured_sources__source")
+
+
+class CurriculumExtractionListView(StaffRequiredMixin, TemplateView):
+    template_name = "curriculum/extraction_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        snapshots = CurriculumSnapshot.objects.order_by("-created_at", "-id").prefetch_related("captured_sources__source")
+        context["snapshot_rows"] = [
+            {
+                "snapshot": snapshot,
+                "summary": curriculum_extraction_summary(snapshot),
+            }
+            for snapshot in snapshots
+        ]
+        return context
+
+
+class CurriculumExtractionCreateView(StaffRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        snapshot = get_object_or_404(CurriculumSnapshot, snapshot_id=kwargs["snapshot_id"])
+        if curriculum_extraction_root(snapshot.snapshot_id).exists():
+            messages.info(request, "Extraction artifacts already exist for this snapshot.")
+            return redirect("curriculum-extraction-detail", snapshot_id=snapshot.snapshot_id)
+        try:
+            result = create_curriculum_extraction(source_snapshot_id=snapshot.snapshot_id, validate=True)
+        except ValidationError as exc:
+            messages.error(request, exc.message if hasattr(exc, "message") else str(exc))
+            return redirect("curriculum-extraction-list")
+        except CurriculumSnapshot.DoesNotExist as exc:
+            raise Http404("Snapshot not found.") from exc
+        if result.validation_errors:
+            messages.warning(request, "Extraction completed with validation errors.")
+        else:
+            messages.success(request, "Extraction artifacts created for web review.")
+        return redirect("curriculum-extraction-detail", snapshot_id=snapshot.snapshot_id)
+
+
+class CurriculumExtractionDetailView(StaffRequiredMixin, TemplateView):
+    template_name = "curriculum/extraction_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        snapshot = get_object_or_404(CurriculumSnapshot, snapshot_id=kwargs["snapshot_id"])
+        summary = curriculum_extraction_summary(snapshot)
+        if not summary["exists"]:
+            raise Http404("Extraction artifacts do not exist for this snapshot.")
+        context["snapshot"] = snapshot
+        context["summary"] = summary
+        context["items"] = summary["items"]
+        context["topics"] = summary["topics"]
+        return context
+
+
+def curriculum_extraction_count() -> int:
+    root = curriculum_extraction_root("00000000-0000-4000-8000-000000000000").parent
+    if not root.exists():
+        return 0
+    return sum(1 for path in root.iterdir() if path.is_dir() and (path / "curriculum_items.json").exists())
+
+
+def curriculum_extraction_summary(snapshot: CurriculumSnapshot) -> dict:
+    root = curriculum_extraction_root(snapshot.snapshot_id)
+    items_path = root / "curriculum_items.json"
+    topics_path = root / "candidate_topics.json"
+    exists = items_path.exists() and topics_path.exists()
+    summary = {
+        "exists": exists,
+        "artifact_root": root,
+        "curriculum_items_path": items_path,
+        "candidate_topics_path": topics_path,
+        "item_count": 0,
+        "candidate_topic_count": 0,
+        "screening_status": "not_generated",
+        "validation_errors": [],
+        "items": [],
+        "topics": [],
+    }
+    if not exists:
+        return summary
+    try:
+        items_payload = read_json(items_path)
+        topics_payload = read_json(topics_path)
+    except (OSError, json.JSONDecodeError) as exc:
+        summary["validation_errors"] = [f"Unable to read extraction artifacts: {exc}"]
+        return summary
+    summary["items"] = items_payload.get("items", [])
+    summary["topics"] = topics_payload.get("topics", [])
+    summary["item_count"] = len(summary["items"])
+    summary["candidate_topic_count"] = len(summary["topics"])
+    summary["screening_status"] = topics_payload.get("screening_status", "unknown")
+    summary["validation_errors"] = validate_curriculum_extraction_artifacts(root)
+    return summary

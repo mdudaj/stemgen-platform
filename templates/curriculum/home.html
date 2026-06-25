@@ -15,7 +15,7 @@
       <div>
         <p class="kisomo-eyebrow">Curriculum Evidence</p>
         <h1>Curriculum</h1>
-        <p>Manage official TIE curriculum sources and review reproducible snapshot evidence before extraction.</p>
+        <p>Manage official TIE curriculum sources, source snapshots, and deterministic extraction evidence before topic screening.</p>
       </div>
       <span class="kisomo-state-chip">{{ active_source_count }} active source{{ active_source_count|pluralize }}</span>
     </section>
@@ -63,6 +63,20 @@
           </div>
         </div>
       </article>
+      <article class="kisomo-card kisomo-action-card">
+        <span class="material-icons" aria-hidden="true">fact_check</span>
+        <div class="kisomo-action-card__body">
+          <h2>Review Extractions</h2>
+          <p>Launch extraction from captured snapshots and inspect curriculum items and candidate topics.</p>
+          <div class="kisomo-action-card__actions">
+            <a class="mdc-button mdc-button--raised kisomo-button" href="{% url 'curriculum-extraction-list' %}">
+              <span class="mdc-button__ripple"></span>
+              <span class="material-icons mdc-button__icon" aria-hidden="true">fact_check</span>
+              <span class="mdc-button__label">Review Extractions</span>
+            </a>
+          </div>
+        </div>
+      </article>
     </section>
 
     <section class="mdc-card kisomo-tab-surface" aria-label="Curriculum status tabs">
@@ -81,7 +95,7 @@
             <div><dt>Active Sources</dt><dd>{{ active_source_count }}</dd></div>
             <div><dt>Tier 1 Sources</dt><dd>{{ tier1_source_count }}</dd></div>
           </dl>
-        {% else %}
+        {% elif active_tab == 'snapshots' %}
           <div class="kisomo-tab-panel__header">
             <span class="material-icons" aria-hidden="true">inventory_2</span>
             <div>
@@ -99,6 +113,19 @@
           {% else %}
             <p class="kisomo-empty-state">No source snapshot has been captured yet.</p>
           {% endif %}
+        {% else %}
+          <div class="kisomo-tab-panel__header">
+            <span class="material-icons" aria-hidden="true">fact_check</span>
+            <div>
+              <h2>Extraction Review</h2>
+              <p>Generated curriculum item and candidate topic datasets awaiting screening.</p>
+            </div>
+          </div>
+          <dl class="kisomo-metric-list">
+            <div><dt>Generated Extractions</dt><dd>{{ extraction_count }}</dd></div>
+            <div><dt>Screening State</dt><dd>Not screened</dd></div>
+            <div><dt>Acceptance State</dt><dd>Not accepted</dd></div>
+          </dl>
         {% endif %}
       </div>
     </section>
