@@ -86,4 +86,4 @@ The first deterministic producer extracts Science and Mathematics seed items fro
 - `curriculum_items.json`
 - `candidate_topics.json`
 
-The producer uses source/page/section/table references from the official syllabi and leaves animation suitability blank/rule-ready. It does not perform PDF OCR, LLM enrichment, rule-based screening, human selection, or topic acceptance.
+The producer uses source/page/section/table references from the official syllabi and leaves animation suitability blank/rule-ready. It can be launched from the staff web UI or the CLI. The web review surface displays generated items, candidate topics, artifact paths, validation state, and pending screening status. It does not perform PDF OCR, LLM enrichment, rule-based screening, human selection, or topic acceptance.

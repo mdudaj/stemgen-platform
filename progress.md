@@ -56,13 +56,18 @@
       animation-suitability fields.
 - [x] Added schema examples and validation coverage for curriculum item
       datasets and candidate topic datasets.
+- [x] Added corrective Slice 2.1 extraction web UX: staff-only extraction
+      worklist, POST launch action, artifact review page, UX artifact, and
+      focused tests so extraction is not CLI-only.
 
 ## In Progress
 
-- [ ] Prepare Slice 3: rule-based topic screening for candidate topics.
+- [ ] Prepare Slice 3: rule-based topic screening for web-reviewable candidate
+      topics.
 
 ## Next Review
 
 - [ ] Define deterministic animation-suitability signals, deprioritization
       reasons, and human-review handoff criteria without accepting topics
-      automatically.
+      automatically. Include web UX requirements if screening results become
+      visible in the operator interface.

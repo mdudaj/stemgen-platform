@@ -1,0 +1,139 @@
+{% extends "app/base_page.html" %}
+
+{% block title_page %}Extraction Review{% endblock %}
+{% block shell_title %}Extraction Review{% endblock %}
+
+{% block breadcrumbs %}
+  <a href="{% url 'dashboard' %}">Dashboard</a>
+  <span aria-hidden="true">/</span>
+  <a href="{% url 'curriculum-home' %}">Curriculum</a>
+  <span aria-hidden="true">/</span>
+  <a href="{% url 'curriculum-extraction-list' %}">Extractions</a>
+  <span aria-hidden="true">/</span>
+  <span>Review</span>
+{% endblock %}
+
+{% block content %}
+  <div class="kisomo-page kisomo-page-stack">
+    <section class="kisomo-object-header">
+      <div>
+        <p class="kisomo-eyebrow">Review extracted artifacts</p>
+        <h1>Extraction Review</h1>
+        <p>Inspect deterministic Science and Mathematics curriculum items and rule-ready candidate topics before screening.</p>
+      </div>
+      <div class="kisomo-object-header__actions">
+        {% url 'curriculum-extraction-list' as back_url %}
+        {% include "app/partials/back_action.html" with href=back_url label="Back to Extractions" %}
+      </div>
+    </section>
+
+    {% if messages %}
+      <section class="kisomo-content-stack" aria-label="Messages">
+        {% for message in messages %}
+          <p class="kisomo-state-chip">{{ message }}</p>
+        {% endfor %}
+      </section>
+    {% endif %}
+
+    <section class="kisomo-card-grid" aria-label="Extraction metrics">
+      <article class="kisomo-card">
+        <h2>Artifact Summary</h2>
+        <p class="kisomo-state-chip">Generated</p>
+        <dl class="kisomo-metric-list">
+          <div><dt>Items</dt><dd>{{ summary.item_count }}</dd></div>
+          <div><dt>Candidate Topics</dt><dd>{{ summary.candidate_topic_count }}</dd></div>
+          <div><dt>Screening</dt><dd>{{ summary.screening_status }}</dd></div>
+        </dl>
+      </article>
+      <article class="kisomo-card">
+        <h2>Artifact Paths</h2>
+        <p>Root: <code>{{ summary.artifact_root }}</code></p>
+        <p>Items: <code>{{ summary.curriculum_items_path }}</code></p>
+        <p>Candidate topics: <code>{{ summary.candidate_topics_path }}</code></p>
+      </article>
+      <article class="kisomo-card">
+        <h2>Validation</h2>
+        {% if summary.validation_errors %}
+          <ul>
+            {% for error in summary.validation_errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No validation errors recorded.</p>
+        {% endif %}
+      </article>
+    </section>
+
+    <article class="kisomo-card kisomo-table-card">
+      <h2>Curriculum Items</h2>
+      <table class="kisomo-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Subject</th>
+            <th>Standard</th>
+            <th>Topic</th>
+            <th>Source Reference</th>
+            <th>Raw Excerpt</th>
+            <th>Review</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+            <tr>
+              <td><code>{{ item.item_id }}</code></td>
+              <td>{{ item.subject }}</td>
+              <td>{{ item.standard }}</td>
+              <td>{{ item.topic }}</td>
+              <td>
+                {{ item.source_title }}<br>
+                Page {{ item.content_reference.page|default:"-" }};
+                {{ item.content_reference.section|default:"section not recorded" }};
+                {{ item.content_reference.table|default:"table not recorded" }}
+              </td>
+              <td>{{ item.raw_text_excerpt }}</td>
+              <td>{{ item.animation_suitability.review_status }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="7">No curriculum items were generated.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+
+    <article class="kisomo-card kisomo-table-card">
+      <h2>Candidate Topics</h2>
+      <table class="kisomo-table">
+        <thead>
+          <tr>
+            <th>Topic</th>
+            <th>Source Items</th>
+            <th>Screening Signals</th>
+            <th>Deprioritization</th>
+            <th>Review Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for topic in topics %}
+            <tr>
+              <td>{{ topic.topic }}</td>
+              <td><code>{{ topic.source_item_ids|join:", " }}</code></td>
+              <td>{{ topic.screening_signals|join:", "|default:"Not screened" }}</td>
+              <td>{{ topic.deprioritization_reasons|join:", "|default:"None recorded" }}</td>
+              <td>{{ topic.review_status }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5">No candidate topics were generated.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </article>
+
+    <p class="kisomo-empty-state">These artifacts are reviewable evidence only. This page does not accept topics, perform rule-based screening, or create human topic decisions.</p>
+  </div>
+{% endblock %}

@@ -34,7 +34,7 @@
             <span>Dashboard</span>
           </a>
           {% if request.user.is_staff %}
-            <a class="kisomo-shell__nav-item{% if request.resolver_match.url_name == 'curriculum-home' or request.resolver_match.url_name == 'curriculum-intake' or request.resolver_match.url_name == 'curriculum-snapshot-list' or request.resolver_match.url_name == 'curriculum-snapshot-detail' %} kisomo-shell__nav-item--active{% endif %}" href="{% url 'curriculum-home' %}">
+            <a class="kisomo-shell__nav-item{% if request.resolver_match.url_name == 'curriculum-home' or request.resolver_match.url_name == 'curriculum-intake' or request.resolver_match.url_name == 'curriculum-source-list' or request.resolver_match.url_name == 'curriculum-source-create' or request.resolver_match.url_name == 'curriculum-snapshot-capture' or request.resolver_match.url_name == 'curriculum-snapshot-list' or request.resolver_match.url_name == 'curriculum-snapshot-detail' or request.resolver_match.url_name == 'curriculum-extraction-list' or request.resolver_match.url_name == 'curriculum-extraction-detail' or request.resolver_match.url_name == 'curriculum-extraction-create' %} kisomo-shell__nav-item--active{% endif %}" href="{% url 'curriculum-home' %}">
               <span class="material-icons" aria-hidden="true">school</span>
               <span>Curriculum</span>
             </a>

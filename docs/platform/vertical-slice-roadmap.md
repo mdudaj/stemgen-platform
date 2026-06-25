@@ -27,6 +27,18 @@ Verification command: `python manage.py curriculum_extract create --snapshot-id 
 Risks: PDF extraction quality; the first producer uses manually curated deterministic seed items until a full PDF extractor is justified.
 Out of scope: Geography candidate generation, LLM enrichment, rule-based screening, human acceptance.
 
+### Slice 2.1: Extraction Web Launch and Review
+
+Goal: make deterministic extraction available through the staff web UI, not only through the CLI.
+Research objective supported: topic identification.
+Workflow definition: curriculum intake and extraction review.
+Evidence produced: web-accessible extraction launch, artifact review surface, curriculum item table, candidate topic table, validation/error status.
+Models/entities required: CurriculumSnapshot, generated curriculum item and candidate topic artifacts.
+Acceptance criteria: staff users can launch extraction from a captured snapshot, inspect generated items and candidate topics with source/page/section references, see pending/not-screened status, and cannot overwrite existing extraction artifacts.
+Verification command: `.venv/bin/python manage.py test apps.curriculum`.
+Risks: artifact-backed review has no database state yet; later slices may need explicit extraction review decisions.
+Out of scope: rule-based screening, human topic acceptance, automated review, reviewer scoring.
+
 ## Slice 3: Rule-Based Topic Screening
 
 Goal: classify candidate topics using deterministic animation-suitability rules.

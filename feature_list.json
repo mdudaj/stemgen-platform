@@ -22,7 +22,7 @@
       "description": "Extract normalized curriculum items from captured TIE source snapshots and produce a candidate topic dataset with source, page, section, and provenance references.",
       "dependencies": ["feat-001"],
       "status": "done",
-      "evidence": "Deterministic Science and Mathematics seed extraction is implemented through the curriculum_extract command and create_curriculum_extraction service. It writes curriculum_items.json and candidate_topics.json linked to a source snapshot, source IDs, page/section/table references, and pending animation-suitability fields. Verified with python3 scripts/validate_json.py and .venv/bin/python manage.py test apps.curriculum."
+      "evidence": "Deterministic Science and Mathematics seed extraction is implemented through the curriculum_extract command, create_curriculum_extraction service, and staff-only web launch/review UI. It writes curriculum_items.json and candidate_topics.json linked to a source snapshot, source IDs, page/section/table references, and pending animation-suitability fields. Web review lists generated items and candidate topics without screening or accepting topics. Verified with python3 scripts/validate_json.py and .venv/bin/python manage.py test apps.curriculum."
     },
     {
       "id": "feat-003",
